@@ -8,31 +8,14 @@
 pip install -U balepy
 ```
 
-> ## START:
+> ## Example:
 ```python
-from balepy import Bot
-bot = Bot("Token")
-```
-
-> ## Methods:
-### send_Message:
-```python
-bot.send_Message(chat_id , "text")
-```
-### getupdate:
-```python
-bot.getupdate()
-```
-### getchat:
-```python
-bot.getchat(chat_id)
-```
-### getme:
-```python
-bot.getme()
+from balepy import Client
+bot = Client("TOKEN")
+bot.send_message(chat_id="Chat_id" , "Text")
 ```
 
 <hr>
 
 > ## Social Media:
-#### Rubika : <a href="https://rubika.ir/balepy_lib">balepy_lib</a>
+> #### Telegram : <a href="t.me/balepy">balepy</a>
