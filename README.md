@@ -1,6 +1,6 @@
 # balepy
 
-<img width="150px" align="right" src="https://s8.uupload.ir/files/balethon_uvi2.png" alt="PROFILE">
+<img width="100px" align="right" src="https://s8.uupload.ir/files/balethon_uvi2.png" alt="PROFILE">
 
 <h3 align="center"> balepy a Library Python for create bot API in bale application </h3>
 
