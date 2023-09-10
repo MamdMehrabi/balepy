@@ -1,4 +1,4 @@
-from requests import get , post
+from main import Client
 
 print(f"""Wellcome to balepy library v1.0
 Mohammad Mehrabi Rad and Erfan Bafandeh <github.com/OnlyRad/balepy>\n\n""")
