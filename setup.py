@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'balepy',
-    version = '1.0',
+    version = '1.1',
     author='Mohammad and Erfan',
     author_email = 'mohammadmehrabi175@gmail.com',
-    description = 'balepy a Library Python for create bot API in bale application',
+    description = 'balepy a Library Python for create bots API in bale application',
     keywords = ['bot' , 'Bot' , 'bale' , 'robot'],
     long_description = open("README.md", encoding="utf-8").read(),
     python_requires="~=3.6",
