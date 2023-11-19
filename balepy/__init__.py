@@ -1,6 +1,6 @@
-from client import Client
-from message import Message
-from datetime import datetime
+from balepy.main import Client
+from balepy.Messages import messages
 
-__version__, __copyright__ = "Version: 1.1\n", f"Time: {datetime.now().year}\nGitHub => github.com/OnlyRad"
-print(__version__ , __copyright__)
+app = Client('905219034:yV3KyeqlSQDHPLF38vX6t2ychdCLSSAXEsRnngy7')
+s = app.polling()
+print(s)
