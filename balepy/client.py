@@ -158,7 +158,7 @@ class Client():
             return responce['result']['invite_link']
 
 
-    async def get_updates(self, offset: int = 0, limit: int = 0):
+    async def get_updates(self, offset: int = 10, limit: int = 10):
         json = {
             'offset': offset, 'limit': limit
         }
@@ -197,7 +197,7 @@ class Client():
         elif just_get_id:
             return responce['result'][0]['user']['id']
         else:
-            return responce
+            return responce['result'][0]
 
 
     async def get_chat_members_count(self, chat_id: str):
