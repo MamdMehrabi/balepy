@@ -1,4 +1,4 @@
-from methods import Methods
+from .methods import Methods
 
 
 class Client():
