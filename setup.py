@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'balepy',
-    version = '1.1',
-    author='Mohammad and Erfan',
+    version = '1.1.1.1',
+    author='Mohammad, AmirAli, Erfan',
     author_email = 'mohammadmehrabi175@gmail.com',
     description = 'balepy a Library Python for create bots API in bale application',
-    keywords = ['bot' , 'Bot' , 'bale' , 'robot'],
+    keywords = ['bot' , 'Bot' , 'bale' , 'robot', 'messangers'],
     long_description = open("README.md", encoding="utf-8").read(),
     python_requires="~=3.6",
     long_description_content_type = 'text/markdown',
