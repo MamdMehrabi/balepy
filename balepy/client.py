@@ -1,14 +1,20 @@
-from .methods import Methods
-
+from methods import Methods
+from json import dumps
 
 class Client():
 
-    def __init__(self, token: str):
+    def __init__(self, session:str, token: str):
         '''Refer to this ID to receive the token >>> @botfather'''
         self.token = token.split(':')[-1]
+        self.session = session
         self.url = 'https://tapi.bale.ai/bot'
-
-
+        if len(token) == 50:
+            json_file = {"name_session": session,"token" : token}
+            dumping = dumps(json_file, indent=2)
+            with open('info.json', 'w') as jsonn:
+                jsonn.write(dumping)
+        else:
+            raise Exception("Token Not Found!")
     # ---------------- Messages Methods ----------------
 
     async def send_message(
