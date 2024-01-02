@@ -9,8 +9,13 @@ pip install -U balepy
 
 > ## START:
 ```python
-from balepy import Bot
-bot = Bot("Token")
+from balepy import Client
+from asyncio import run
+
+async def main ():
+    client = Client('Token')
+    result = await client.get_me ()
+    print(result)
 ```
 
 > ## Social Media:
