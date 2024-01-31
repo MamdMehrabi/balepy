@@ -7,6 +7,9 @@ class Client:
         self.timeout = timeout
         self.session = session()
 
+        if not token:
+            raise ValueError('`token` did\'t passed')
+
     @property
     def url(self):
         return f'https://tapi.bale.ai/bot{self.token}'
