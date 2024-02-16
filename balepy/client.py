@@ -124,20 +124,6 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: int = None
     ) -> dict:
-        '''Use this method to send images
-        :param chat_id:
-            Conversation ID. requirement**
-        :param file:
-            Photo file to be sent. requirement**
-        :param caption:
-            Photo file subtitle, between 0 and 1024 characters. optional**
-        :param reply_to_message_id:
-            The ID of the original message, if the message is a reply. optional**
-        :param reply_markup:
-            Additional features of the arm user interface. optional**
-        :return:
-            On successful execution, the sent message is returned.
-        '''
         files = {'photo': open(file, 'rb')}
         values = {
             'chat_id': chat_id,
@@ -158,21 +144,9 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: str = None
     ) -> dict:
-        '''If you want yes clients to display these files in the music player, use this method to send audio files.
-        :param chat_id:
-            Conversation ID. requirement**
-        :param file:
-            Audio file to be sent. The maximum file size is 50 MB. requirement**
-        :param caption:
-            Audio file subtitle, between 0 and 1024 characters. optional**
-        :param reply_to_message_id:
-            The ID of the original message, if the message is a reply. optional**
-        :param reply_markup:
-            Additional features of the arm user interface. optional**
-        :return:
-            If successful, the sent message will be returned
-        '''
-        files = {'audio': open(file, 'rb')}
+        files = {
+            'audio': open(file, 'rb')
+        }
         values = {
             'chat_id': chat_id,
             'caption': caption,
@@ -259,18 +233,6 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: int = None
     ) -> dict:
-        '''If you want yes clients to display the file as an audio message, use this method to send audio files.
-        :param chat_id:
-            Conversation ID. requirement**
-        :param file:
-            Voice file to be sent. The maximum file size is 50 MB. requirement**
-        :param reply_to_message_id:
-            The ID of the original message, if the message is a reply. optional**
-        :param reply_markup:
-            Additional features of the arm user interface. optional**
-        :return:
-            If successful, the sent message will be returned
-        '''
         files = {
             'voice': open(file, 'rb')
         }
@@ -413,12 +375,6 @@ class Client:
 
 
     async def get_chat_members_count(self, chat_id: str) -> dict:
-        '''This method is used to get the number of conversation members.
-        :param chat_id:
-            Conversation ID. requirement**
-        :return:
-            Returns an integer on success.
-        '''
         payload = {
             'chat_id': chat_id
         }
@@ -435,14 +391,6 @@ class Client:
 
 
     async def set_chat_photo(self, chat_id: str | int, photo = str | bytes) -> dict:
-        '''This method is used to set a new profile picture for the chat
-        :param chat_id:
-            Conversation ID. requirement**
-        :param photo:
-            The new image you want to put. requirement**
-        :return:
-            Returns True on success.
-        '''
         files = {
             'photo': open(file, 'rb')
         }
