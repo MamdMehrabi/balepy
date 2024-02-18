@@ -121,4 +121,3 @@ class message:
                 return 'audio'
         else:
             return None
-        
