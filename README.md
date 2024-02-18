@@ -19,5 +19,4 @@ async def main ():
 ```
 
 ### Social Media:
-#### <a href="https://t.me/TheCommit">TELEGRAM</a>
-#### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
+#### <a href="https://t.me/TheCommit">TELEGRAM</a> <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
