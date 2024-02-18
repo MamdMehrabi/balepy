@@ -23,6 +23,17 @@ class Client:
             pass
 
     def on_message(self):
+        '''Use this method to receive updates
+        Example:
+            from balepy import Client
+
+            client = Client('token', timeout=10)
+            def main():
+                for update in client.on_message():
+                    print(update.text)
+
+            main()
+        '''
         payload: dict = {
             'offset': -1, 'limit': 100
         }
