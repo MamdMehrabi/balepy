@@ -1,117 +1,457 @@
-from methods import Methods
-from json import dumps
+import asyncio, aiohttp, requests
+import util
 
-class Client():
+class Client:
 
-    def __init__(self, session:str, token: str):
-        '''Refer to this ID to receive the token >>> @botfather'''
-        self.token = token.split(':')[-1]
-        self.session = session
-        self.url = 'https://tapi.bale.ai/bot'
-        if len(token) == 50:
-            json_file = {"name_session": session,"token" : token}
-            dumping = dumps(json_file, indent=2)
-            with open('info.json', 'w') as jsonn:
-                jsonn.write(dumping)
-        else:
-            raise Exception("Token Not Found!")
-    # ---------------- Messages Methods ----------------
+    def __init__(self, token: str, timeout: float = 20) -> None:
+        self.token: str = token
+        self.timeout: float = timeout
 
-    async def send_message(
+        if not token:
+            raise ValueError('`token` did\'t passed')
+
+    async def execute(self, method: str, data: dict = None) -> dict:
+        url: str = f'https://tapi.bale.ai/bot{self.token}/{method}'
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url=url, data=data, timeout=self.timeout) as r:
+                return await r.json()
+
+    def request(self, method: str, data: dict = None) -> dict:
+        try:
+            return asyncio.run(self.execute(method=method, data=data))
+        except Exception:
+            pass
+
+    def on_message(self):
+        '''Use this method to receive updates
+        Example:
+            from balepy import Client
+
+            client = Client('token', timeout=10)
+            def main():
+                for update in client.on_message():
+                    print(update.text)
+
+            main()
+        '''
+        payload: dict = {
+            'offset': -1, 'limit': 100
+        }
+        while True:
+            update = self.request('getupdates', data=payload)
+            payload['offset'] = 1
+            if (update != None) and (update['ok']) and (update['result'] != []):
+                break
+
+        payload['offset'] = update['result'][len(update['result'])-1]['update_id'] + 1
+        payload['limit'] = 1
+        while True:
+            responce = self.request('getupdates', data=payload)
+            if responce != None and responce['result'] != []:
+                payload['offset'] += 1
+                yield util.message(responce['result'][0])
+
+
+    def send_message(
             self,
-            chat_id: str,
+            chat_id: str | int,
             text: str,
             reply_markup: int = None,
             reply_to_message_id: int = None
     ) -> dict:
-        '''
-        :param chat_id (str):
-            The ID of the group you can send messages to
-
+        '''Use this method to send text messages
+        :param chat_id:
+            The ID of the group you can send messages to. requirement**
         :param text:
-            The text you want to send
-
+            You can only send between 1 and 4096 characters*. requirement**
         :param reply_markup:
-            pass
-
-        :param reply_to_message_id (str):
-            reply to message id Defaults to None.
-
+            Additional features of the arm user interface. optional**
+        :param reply_to_message_id:
+            The ID of the original message, if the message is a reply. optional**
         :return:
-            status: True or False
+            If successful, the sent message will be returned.
         '''
-        return await Methods._send_message(self, chat_id, text, reply_markup, reply_to_message_id)
+        payload: dict = {
+            'chat_id': chat_id,
+            'text': text,
+            'reply_markup': reply_markup,
+            'reply_to_message_id': reply_to_message_id
+        }
+        return self.request('sendMessage', data=payload)
 
 
-    async def edit_message(
+    def edit_message(
             self,
-            chat_id: str,
+            chat_id: str | int,
             text: str,
             message_id: int,
             reply_markup: int = None
     ) -> dict:
-        return await Methods._edit_message(self, chat_id, text, message_id, reply_markup)
+        payload: dict = {
+            'chat_id': chat_id,
+            'text': text,
+            'reply_to_message_id': message_id,
+            'reply_markup': reply_markup
+        }
+        return self.request('editmessage', data=payload)
 
 
-    async def delete_message(self, chat_id: str, message_id: int) -> dict:
-        return await Methods._delete_message(self, chat_id, message_id)
-
-
-    async def send_contact(
+    def forward_message(
             self,
-            chat_id: str,
+            chat_id: str | int,
+            from_chat_id: str | int,
+            message_id: int
+    ) -> dict:
+        payload: dict = {
+            'chat_id': chat_id, 'from_chat_id': from_chat_id, 'message_id': message_id
+        }
+        return self.request('forwardmessage', json=payload)
+
+
+    def delete_message(self, chat_id: str | int, message_id: int) -> dict:
+        payload: dict = {
+            'chat_id': chat_id, 'reply_to_message_id': message_id
+        }
+        return self.request('deletemessage', data=payload)
+
+
+    def send_contact(
+            self,
+            chat_id: str | int,
             phone_number: int,
             first_name: str,
             last_name: str = None,
-            reply_to_message_id:int = None
+            reply_to_message_id: int = None
     ) -> dict:
-        return await Methods._send_contact(self, chat_id, phone_number, first_name, last_name, reply_to_message_id)
+        '''This method is used to send a phone contact
+        :param chat_id:
+            The ID of the group you can send messages to. requirement**
+        :param phone_number:
+            contact number. requirement**
+        :param first_name:
+            Contact's first name. requirement**
+        :param last_name:
+            Last name of the addressee. optional**
+        :param reply_to_message_id:
+            The ID of the original message, if the message is a reply. optional**
+        :return:
+            On successful execution, the sent message is returned as output.
+        '''
+        payload: dict = {
+            'chat_id': chat_id,
+            'phone_number': phone_number,
+            'first_name': first_name,
+            'last_name': last_name,
+            'reply_to_message_id': reply_to_message_id
+        }
+        return self.request('sendcontact', data=payload)
 
 
-    async def set_webhook(self, url: str) -> dict:
-        return await Methods._set_webhook(self, url)
+    def send_photo(
+            self,
+            chat_id: str | int,
+            from_chat_id: str | int,
+            file: str | bytes,
+            caption: str = None,
+            reply_to_message_id: int = None,
+            reply_markup: int = None
+    ) -> dict:
+        files: dict = {
+            'photo': open(file, 'rn')
+        }
+        values: dict = {
+            'chat_id': chat_id,
+            'from_chat_id': from_chat_id,
+            'caption': caption,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': reply_markup
+        }
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendphoto',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def delete_webhook(self) -> dict:
-        return await Methods._delete_webhook(self)
+    def send_audio(
+            self,
+            chat_id: str | int,
+            file: str | bytes,
+            caption: str = None,
+            reply_to_message_id: int = None,
+            reply_markup: str = None
+    ) -> dict:
+        files: dict = {
+            'audio': open(file, 'rb')
+        }
+        values: dict = {
+            'chat_id': chat_id,
+            'caption': caption,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': reply_markup
+        }
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/audio',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    # ---------------- Users Methods ----------------
+    def send_document(
+            self,
+            chat_id: str | int,
+            file: str | bytes,
+            caption: str = None,
+            reply_to_message_id: int = None,
+            reply_markup: int = None
+    ) -> dict:
+        '''This method is used to send public files.
+        :param chat_id:
+            Conversation ID. requirement**
+        :param file:
+            Document file to be sent. The maximum file size is 50 MB. requirement**
+        :param caption:
+            Subtitle of the document, between 0 and 1024 characters. optional**
+        :param reply_to_message_id:
+            The ID of the original message, if the message is a reply. optional**
+        :param reply_markup:
+            Additional features of the arm user interface. optional**
+        :return:
+            If successful, the sent message will be returned
+        '''
+        files: dict = {
+            'document': open(file, 'rb')
+        }
+        values: dict = {
+            'chat_id': chat_id,
+            'caption': caption,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': reply_markup
+        }
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/senddocument',
+            data=values, files=files, timeout=self.timeout
+        )
 
-    async def get_me(self) -> dict:
-        '''Get bot account information'''
-        return await Methods._get_me(self)
+
+    def send_animation(
+            self,
+            chat_id: str | int,
+            file: str | bytes,
+            reply_to_message_id: int = None,
+            reply_markup: int = None
+    ) -> dict:
+        '''This method is used to send animation files (GIF video or H.264/MPEG-4 AVC without sound)'''
+        files: dict = {
+            'animation': open(file, 'rb')
+        }
+        values: dict = {
+            'chat_id': chat_id,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': reply_markup
+        }
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendanimation',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def get_username_by_id(self, chat_id: str, user_id: str) -> dict:
-        return await Methods._get_username_by_id(self, chat_id, user_id)
+    def send_voice(
+            self,
+            chat_id: str | int,
+            file: str | bytes,
+            caption: str,
+            reply_to_message_id: int = None,
+            reply_markup: int = None
+    ) -> dict:
+        files: dict = {
+            'voice': open(file, 'rb')
+        }
+        values: dict = {
+            'chat_id': chat_id,
+            'caption': caption,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': reply_markup
+        }
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendvoice',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    # ---------------- Chats Methods ----------------
+    def send_location(
+            self,
+            chat_id: str | int,
+            latitude: float,
+            longitude: float,
+            horizontal_accuracy: float,
+            reply_to_message_id: int = None,
+            reply_markup: int = None
+    ) -> dict:
+        '''This method is used to send a map point
+        :param chat_id:
+            Conversation ID. requirement**
+        :param latitude:
+            The latitude of the location. requirement**
+        :param longitude
+            The longitude of the location. requirement**
+        :param horizontal_accuracy
+            The radius of uncertainty for a spatial point
+            is measured in meters and is a number between 0 and 1500. optional**
+        :param reply_to_message_id:
+            The ID of the original message, if the message is a reply. optional**
+        :param reply_markup:
+            Additional features of the arm user interface. optional**
+        :return:
+            On successful execution, the sent message is returned as output.
+        '''
+        payload: dict = {
+            'chat_id': chat_id,
+            'latitude': latitude,
+            'longitude': longitude,
+            'horizontal_accuracy': horizontal_accuracy,
+            'reply_to_message_id': reply_to_message_id,
+            'reply_markup': reply_markup
+        }
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendlocation',
+            data=values, files=files, timeout=self.timeout
+        )
 
-    async def get_chat(self, chat_id: str) -> dict:
-        return await Methods._get_chat(self, chat_id)
+
+    def set_webhook(self, url: str) -> dict:
+        '''This method is used to specify an outgoing webhook URL'''
+        payload: dict = {
+            'url': url
+        }
+        return self.request('setwebhook', data=payload)
 
 
-    async def get_chat_join_link(self, chat_id: str) -> dict:
-        return await Methods._get_chat_join_link(self, chat_id)
+    def delete_webhook(self) -> dict:
+        return self.request(method='deletewebhook')
 
 
-    async def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
-        return await Methods._get_updates(self, offset, limit)
+    def get_webhook_info(self) -> dict:
+        '''Use this method to get the current state of the webhook'''
+        return self.request(data='getwebhookinfo')
 
 
-    async def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
-        return await Methods._get_chat_administrators(self, chat_id, just_get_id)
+    def webhook_info(self, url: str) -> dict:
+        '''Displays the current state of a webhook'''
+        payload: dict = {
+            'url': url
+        }
+        return self.request('webhookinfo', data=payload)
 
 
-    async def get_chat_creator(self, chat_id: str, just_get_id: str) -> dict:
-        return await Methods._get_chat_creator(self, chat_id, just_get_id)
+    def get_me(self) -> dict:
+        '''get bot account information'''
+        return self.request(method='getme')
 
 
-    async def get_chat_members_count(self, chat_id: str) -> dict:
-        return await Methods._get_chat_members_count(self, chat_id)
+    def get_chat(self, chat_id: str) -> dict:
+        '''This method is used to get up-to-date information
+        about the conversation (current username for one-to-one conversations,
+        current username of a user, group or channel).
+        :param chat_id:
+            Conversation ID. requirement**
+        :return:
+            Returns a Chat object on success.
+        '''
+        payload: dict = {
+            'chat_id': chat_id
+        }
+        return self.request('getchat', data=payload)
 
 
-    async def get_chat_member(self, chat_id: str, user_id: str) -> dict:
-        return await Methods._get_chat_member(self, chat_id, user_id)
+    def leave_chat(self, chat_id: str) -> dict:
+        '''This method is used for the arm to leave a group, group or channel
+        :param chat_id:
+            Conversation ID. requirement**
+        :return:
+            If successful, its output is True.
+        '''
+        payload: dict = {
+            'chat_id': chat_id
+        }
+        return self.request('leavechat', data=payload)
+
+
+    def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
+        payload: dict = {
+            'offset': offset, 'limit': limit
+        }
+        return self.request('getupdates', data=payload)
+
+
+    def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
+        payload: dict = {
+            'chat_id': chat_id
+        }
+        responce = self.request('getchatadministrators', data=payload)
+
+        if just_get_id:
+            ids = []
+            for user in responce['result']:
+                ids.append(user['user']['id'])
+
+            return ids
+        else:
+            return responce
+
+
+
+    def get_chat_members_count(self, chat_id: str) -> dict:
+        payload: dict = {
+            'chat_id': chat_id
+        }
+        return self.request('getchatmemberscount', data=payload)
+
+
+    def get_chat_member(self, chat_id: str, user_id: str) -> dict:
+        payload: dict = {
+            'chat_id': chat_id, 'user_id': user_id
+        }
+        return self.request('getchatmember', data=payload)
+
+
+    def set_chat_photo(self, chat_id: str | int, photo = str | bytes) -> dict:
+        files: dict = {
+            'photo': open(file, 'rb')
+        }
+        values: dict = {
+            'chat_id': chat_id
+        }
+        return self.request('setchatphoto', data=values, files=files)
+
+
+    def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
+        payload: dict = {
+            'chat_id': chat_id, 'user_id': user_id
+        }
+        return self.request('banchatmember', data=payload)
+
+
+    def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
+        payload: dict = {
+            'chat_id': chat_id, 'user_id': user_id
+        }
+        return self.request('unbanchatmember', data=payload)
+
+
+    def get_file(self, file_id: str) -> dict:
+        '''This method is used to get the basic information
+        of a file and prepare it for download.
+        :param file_id:
+            ID of the file whose information should be received. requirement**
+        :return:
+            Returns a File object on successful execution
+        '''
+        payload: dict = {
+            'file_id': file_id
+        }
+        return self.request('getfile', data=payload)
