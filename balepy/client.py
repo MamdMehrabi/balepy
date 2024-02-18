@@ -1,21 +1,47 @@
-from requests import session
+import asyncio, aiohttp, requests
+import util
 
 class Client:
 
     def __init__(self, token: str, timeout: float = 20) -> None:
-        self.token = token
-        self.timeout = timeout
-        self.session = session()
+        self.token: str = token
+        self.timeout: float = timeout
 
         if not token:
             raise ValueError('`token` did\'t passed')
 
-    @property
-    def url(self):
-        return f'https://tapi.bale.ai/bot{self.token}'
+    async def execute(self, method: str, data: dict = None) -> dict:
+        url: str = f'https://tapi.bale.ai/bot{self.token}/{method}'
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url=url, data=data, timeout=self.timeout) as r:
+                return await r.json()
+
+    def request(self, method: str, data: dict = None) -> dict:
+        try:
+            return asyncio.run(self.execute(method=method, data=data))
+        except Exception:
+            pass
+
+    def on_message(self):
+        payload: dict = {
+            'offset': -1, 'limit': 100
+        }
+        while True:
+            update = self.request('getupdates', data=payload)
+            payload['offset'] = 1
+            if (update != None) and (update['ok']) and (update['result'] != []):
+                break
+
+        payload['offset'] = update['result'][len(update['result'])-1]['update_id'] + 1
+        payload['limit'] = 1
+        while True:
+            responce = self.request('getupdates', data=payload)
+            if responce != None and responce['result'] != []:
+                payload['offset'] += 1
+                yield util.message(responce['result'][0])
 
 
-    async def send_message(
+    def send_message(
             self,
             chat_id: str | int,
             text: str,
@@ -34,55 +60,51 @@ class Client:
         :return:
             If successful, the sent message will be returned.
         '''
-        payload = {
+        payload: dict = {
             'chat_id': chat_id,
             'text': text,
             'reply_markup': reply_markup,
             'reply_to_message_id': reply_to_message_id
         }
-        return self.session.request(
-            'post', f'{self.url}/sendmessage', timeout=self.timeout, json=payload).json()
+        return self.request('sendMessage', data=payload)
 
 
-    async def edit_message(
+    def edit_message(
             self,
             chat_id: str | int,
             text: str,
             message_id: int,
             reply_markup: int = None
     ) -> dict:
-        payload = {
+        payload: dict = {
             'chat_id': chat_id,
             'text': text,
             'reply_to_message_id': message_id,
             'reply_markup': reply_markup
         }
-        return self.session.request(
-            'post', f'{self.url}/editmessage', timeout=self.timeout, json=payload).json()
+        return self.request('editmessage', data=payload)
 
 
-    async def forward_message(
+    def forward_message(
             self,
             chat_id: str | int,
             from_chat_id: str | int,
             message_id: int
     ) -> dict:
-        payload = {
+        payload: dict = {
             'chat_id': chat_id, 'from_chat_id': from_chat_id, 'message_id': message_id
         }
-        return self.session.request(
-            'get', f'{self.url}/forwardmessage', timeout=self.timeout, json=payload).json()
+        return self.request('forwardmessage', json=payload)
 
 
-    async def delete_message(self, chat_id: str | int, message_id: int) -> dict:
-        payload = {
+    def delete_message(self, chat_id: str | int, message_id: int) -> dict:
+        payload: dict = {
             'chat_id': chat_id, 'reply_to_message_id': message_id
         }
-        return self.session.request(
-            'post', f'{self.url}/deletemessage', timeout=self.timeout, json=payload).json()
+        return self.request('deletemessage', data=payload)
 
 
-    async def send_contact(
+    def send_contact(
             self,
             chat_id: str | int,
             phone_number: int,
@@ -104,18 +126,17 @@ class Client:
         :return:
             On successful execution, the sent message is returned as output.
         '''
-        payload = {
+        payload: dict = {
             'chat_id': chat_id,
             'phone_number': phone_number,
             'first_name': first_name,
             'last_name': last_name,
             'reply_to_message_id': reply_to_message_id
         }
-        return self.session.request(
-            'post', f'{self.url}/sendcontact', timeout=self.timeout, json=payload).json()
+        return self.request('sendcontact', data=payload)
 
 
-    async def send_photo(
+    def send_photo(
             self,
             chat_id: str | int,
             from_chat_id: str | int,
@@ -124,19 +145,24 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: int = None
     ) -> dict:
-        files = {'photo': open(file, 'rb')}
-        values = {
+        files: dict = {
+            'photo': open(file, 'rn')
+        }
+        values: dict = {
             'chat_id': chat_id,
             'from_chat_id': from_chat_id,
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.session.request(
-            'post', f'{self.url}/sendphoto', timeout=self.timeout, data=values, files=files).json()
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendphoto',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def send_audio(
+    def send_audio(
             self,
             chat_id: str | int,
             file: str | bytes,
@@ -144,20 +170,23 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: str = None
     ) -> dict:
-        files = {
+        files: dict = {
             'audio': open(file, 'rb')
         }
-        values = {
+        values: dict = {
             'chat_id': chat_id,
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.session.request(
-            'post', f'{self.url}/sendaudio', timeout=self.timeout, data=values, files=files).json()
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/audio',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def send_document(
+    def send_document(
             self,
             chat_id: str | int,
             file: str | bytes,
@@ -179,53 +208,46 @@ class Client:
         :return:
             If successful, the sent message will be returned
         '''
-        files = {
+        files: dict = {
             'document': open(file, 'rb')
         }
-        values = {
+        values: dict = {
             'chat_id': chat_id,
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.session.request(
-            'post', f'{self.url}/senddocument', timeout=self.timeout, data=values, files=files).json()
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/senddocument',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def send_animation(
+    def send_animation(
             self,
             chat_id: str | int,
             file: str | bytes,
             reply_to_message_id: int = None,
             reply_markup: int = None
     ) -> dict:
-        '''This method is used to send animation files (GIF video or H.264/MPEG-4 AVC without sound).
-        :param chat_id:
-            Conversation ID. requirement**
-        :param file:
-            Animation file to be sent. The maximum file size is 50 MB. requirement**
-        :param caption:
-            Subtitle of the voice, between 0 and 1024 characters. optional**
-        :param reply_to_message_id:
-            The ID of the original message, if the message is a reply. optional**
-        :param reply_markup:
-            Additional features of the arm user interface. optional**
-        :return:
-            If successful, the sent message will be returned
-        '''
-        files = {
+        '''This method is used to send animation files (GIF video or H.264/MPEG-4 AVC without sound)'''
+        files: dict = {
             'animation': open(file, 'rb')
         }
-        values = {
+        values: dict = {
             'chat_id': chat_id,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.session.request(
-            'post', f'{self.url}/sendanimation', timeout=self.timeout, data=values, files=files).json()
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendanimation',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def send_voice(
+    def send_voice(
             self,
             chat_id: str | int,
             file: str | bytes,
@@ -233,20 +255,23 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: int = None
     ) -> dict:
-        files = {
+        files: dict = {
             'voice': open(file, 'rb')
         }
-        values = {
+        values: dict = {
             'chat_id': chat_id,
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.session.request(
-            'post', f'{self.url}/sendvoice', timeout=self.timeout, data=values, files=files).json()
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendvoice',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def send_location(
+    def send_location(
             self,
             chat_id: str | int,
             latitude: float,
@@ -272,7 +297,7 @@ class Client:
         :return:
             On successful execution, the sent message is returned as output.
         '''
-        payload = {
+        payload: dict = {
             'chat_id': chat_id,
             'latitude': latitude,
             'longitude': longitude,
@@ -280,45 +305,44 @@ class Client:
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.session.request(
-            'post', f'{self.url}/sendLocation', timeout=self.timeout, json=payload).json()
+        return requests.request(
+            'post',
+            url=f'https://tapi.bale.ai/bot{self.token}/sendlocation',
+            data=values, files=files, timeout=self.timeout
+        )
 
 
-    async def set_webhook(self, url: str) -> dict:
+    def set_webhook(self, url: str) -> dict:
         '''This method is used to specify an outgoing webhook URL'''
-        payload = {
+        payload: dict = {
             'url': url
         }
-        return self.session.request(
-            'post', f'{self.url}/setwebhook', timeout=self.timeout, json=payload).json()
+        return self.request('setwebhook', data=payload)
 
 
-    async def delete_webhook(self) -> dict:
-        return self.session.request(
-            'post', f'{self.url}/deletewebhook', timeout=self.timeout).json()
+    def delete_webhook(self) -> dict:
+        return self.request(method='deletewebhook')
 
 
-    async def get_webhook_info(self) -> dict:
+    def get_webhook_info(self) -> dict:
         '''Use this method to get the current state of the webhook'''
-        return self.session.request(
-            'get', f'{self.url}/getwebhookinfo', timeout=self.timeout).json()
+        return self.request(data='getwebhookinfo')
 
 
-    async def webhook_info(self, url: str) -> dict:
+    def webhook_info(self, url: str) -> dict:
         '''Displays the current state of a webhook'''
-        payload = {
+        payload: dict = {
             'url': url
         }
-        return self.session.request(
-            'get', f'{self.url}/webhookinfo', timeout=self.timeout, json=payload).json()
+        return self.request('webhookinfo', data=payload)
 
 
-    async def get_me(self) -> dict:
+    def get_me(self) -> dict:
         '''get bot account information'''
-        return self.session.request('get', f'{self.url}/getme', timeout=self.timeout).json()
+        return self.request(method='getme')
 
 
-    async def get_chat(self, chat_id: str) -> dict:
+    def get_chat(self, chat_id: str) -> dict:
         '''This method is used to get up-to-date information
         about the conversation (current username for one-to-one conversations,
         current username of a user, group or channel).
@@ -327,41 +351,37 @@ class Client:
         :return:
             Returns a Chat object on success.
         '''
-        payload = {
+        payload: dict = {
             'chat_id': chat_id
         }
-        return self.session.request(
-            'get', f'{self.url}/getchat', timeout=self.timeout, json=payload).json()
+        return self.request('getchat', data=payload)
 
 
-    async def leave_chat(self, chat_id: str) -> dict:
+    def leave_chat(self, chat_id: str) -> dict:
         '''This method is used for the arm to leave a group, group or channel
         :param chat_id:
             Conversation ID. requirement**
         :return:
             If successful, its output is True.
         '''
-        payload = {
+        payload: dict = {
             'chat_id': chat_id
         }
-        return self.session.request(
-            'post', f'{self.url}/leavechat', timeout=self.timeout, json=payload).json()
+        return self.request('leavechat', data=payload)
 
 
-    async def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
-        payload = {
+    def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
+        payload: dict = {
             'offset': offset, 'limit': limit
         }
-        return self.session.request(
-            'get', f'{self.url}/getupdates', timeout=self.timeout, json=payload).json()
+        return self.request('getupdates', data=payload)
 
 
-    async def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
-        payload = {
+    def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
+        payload: dict = {
             'chat_id': chat_id
         }
-        responce = self.session.request(
-            'get', f'{self.url}/getchatadministrators', timeout=self.timeout, json=payload).json()
+        responce = self.request('getchatadministrators', data=payload)
 
         if just_get_id:
             ids = []
@@ -374,58 +394,45 @@ class Client:
 
 
 
-    async def get_chat_members_count(self, chat_id: str) -> dict:
-        payload = {
+    def get_chat_members_count(self, chat_id: str) -> dict:
+        payload: dict = {
             'chat_id': chat_id
         }
-        return self.session.request(
-            'get', 'getchatmemberscount', timeout=self.timeout, json=payload).json()
+        return self.request('getchatmemberscount', data=payload)
 
 
-    async def get_chat_member(self, chat_id: str, user_id: str) -> dict:
-        payload = {
+    def get_chat_member(self, chat_id: str, user_id: str) -> dict:
+        payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
-        return self.session.request(
-            'get', f'{self.url}/getchatmember', timeout=self.timeout, json=payload).json()
+        return self.request('getchatmember', data=payload)
 
 
-    async def set_chat_photo(self, chat_id: str | int, photo = str | bytes) -> dict:
-        files = {
+    def set_chat_photo(self, chat_id: str | int, photo = str | bytes) -> dict:
+        files: dict = {
             'photo': open(file, 'rb')
         }
-        values = {
+        values: dict = {
             'chat_id': chat_id
         }
-        return self.session.request(
-            'post', f'{self.url}/setchatphoto', timeout=self.timeout, data=values, files=files).json()
+        return self.request('setchatphoto', data=values, files=files)
 
 
-    async def promote_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
-        payload = {
+    def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
+        payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
-        return self.session.request(
-            'post', f'{self.url}/promoteChatMember', timeout=self.timeout, json=payload).json()
+        return self.request('banchatmember', data=payload)
 
 
-    async def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
-        payload = {
+    def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
+        payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
-        return self.session.request(
-            'post', f'{self.url}/banchatmember', timeout=self.timeout, json=payload).json()
+        return self.request('unbanchatmember', data=payload)
 
 
-    async def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
-        payload = {
-            'chat_id': chat_id, 'user_id': user_id
-        }
-        return self.session.request(
-            'post', f'{self.url}/unbanchatmember', timeout=self.timeout, json=payload).json()
-
-
-    async def get_file(self, file_id: str) -> dict:
+    def get_file(self, file_id: str) -> dict:
         '''This method is used to get the basic information
         of a file and prepare it for download.
         :param file_id:
@@ -433,8 +440,7 @@ class Client:
         :return:
             Returns a File object on successful execution
         '''
-        payload = {
+        payload: dict = {
             'file_id': file_id
         }
-        return self.session.request(
-            'get', f'{self.url}/getfile', timeout=self.timeout, json=payload).json()
+        return self.request('getfile', data=payload)
