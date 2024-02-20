@@ -1,6 +1,8 @@
-from balepy import Client
+from ..balepy import Client
 
-client = Client('token', timeout=10)
+token = "905219034:YQv758HR5sbUaTbXS7CAeDyJVubvgHtwiwkpIOHH"
+
+client = Client(token, timeout=10)
 def main():
     for update in client.on_message():
         client.send_message(
