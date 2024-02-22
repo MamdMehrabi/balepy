@@ -9,7 +9,7 @@ class Client:
 
         if not token:
             raise ValueError('`token` did\'t passed')
-        elif token > 50 or token < 50:
+        elif len(token) > 50 or len(token) < 50:
             raise Exception("not found token")
 
     async def execute(self, method: str, data: dict = None) -> dict:
