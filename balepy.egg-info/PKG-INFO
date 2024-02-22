@@ -1,0 +1,49 @@
+Metadata-Version: 2.1
+Name: balepy
+Version: 1.2
+Summary: balepy a Library Python for create bots API in bale application
+Home-page: https://github.com/OnlyRad/balepy
+Author: Mohammad, AmirAli
+Author-email: mohammadmehrabi175@gmail.com
+Keywords: bot,Bot,bale,robot,messangers
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: ~=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# balepy
+
+<h3 align="center"> balepy a Library Python for create bot API in bale application </h3>
+
+> ## Install and Update:
+```python
+pip install -U balepy
+```
+
+## For See Docs:
+### <a href="https://balepy.github.io">WebSite</a>
+### <a href="https://t.me/TheCommit">TELEGRAM</a>
+
+> ## START:
+```python
+from balepy import Client
+from asyncio import run
+
+bot = Client("TOKEN")
+
+async def main():
+    await bot.send_message(91837181, "Hello World")
+
+run(main())
+```
+
+> ## Social Media:
+#### <a href="https://t.me/TheCommit">TELEGRAM</a>
+#### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
