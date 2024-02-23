@@ -1,5 +1,6 @@
 from balepy import Client
 
+# Enter Your Token:
 token = ""
 
 client = Client(token, timeout=10)
