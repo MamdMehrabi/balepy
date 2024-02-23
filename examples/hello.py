@@ -1,6 +1,6 @@
 from balepy import Client
 
-token = "786709312:xLUHc77Oxuqvbly8Y2QbBnoRFVooOBbuMJLW3LOc"
+token = ""
 
 client = Client(token, timeout=10)
 def main():
