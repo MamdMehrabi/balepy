@@ -1,5 +1,6 @@
-import asyncio, aiohttp, requests
 from .util import message
+import requests
+
 
 class Client:
 
@@ -10,17 +11,17 @@ class Client:
         if not token:
             raise ValueError('`token` did\'t passed')
 
-    async def execute(self, method: str, data: dict = None) -> dict:
+    def execute(self, method: str, data: dict = None) -> dict:
         url: str = f'https://tapi.bale.ai/bot{self.token}/{method}'
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url=url, data=data, timeout=self.timeout) as r:
-                return await r.json()
+        with requests.session() as session:
+            with session.request('post', url=url, data=data, timeout=self.timeout) as r:
+                return r.json()
 
     def request(self, method: str, data: dict = None) -> dict:
         try:
-            return asyncio.run(self.execute(method=method, data=data))
-        except Exception:
-            pass
+            return self.execute(method=method, data=data)
+        except Exception as err:
+            print(__file__, err, __file__)
 
     def on_message(self):
         '''Use this method to receive updates
@@ -52,7 +53,7 @@ class Client:
                 yield message(responce['result'][0])
 
 
-    def send_message(
+    async def send_message(
             self,
             chat_id: str | int,
             text: str,
@@ -77,10 +78,9 @@ class Client:
             'reply_markup': reply_markup,
             'reply_to_message_id': reply_to_message_id
         }
-        return self.request('sendMessage', data=payload)
+        return self.request('sendmessage', data=payload)
 
-
-    def edit_message(
+    async def edit_message(
             self,
             chat_id: str | int,
             text: str,
@@ -96,7 +96,7 @@ class Client:
         return self.request('editmessage', data=payload)
 
 
-    def forward_message(
+    async def forward_message(
             self,
             chat_id: str | int,
             from_chat_id: str | int,
@@ -108,14 +108,14 @@ class Client:
         return self.request('forwardmessage', json=payload)
 
 
-    def delete_message(self, chat_id: str | int, message_id: int) -> dict:
+    async def delete_message(self, chat_id: str | int, message_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'reply_to_message_id': message_id
         }
         return self.request('deletemessage', data=payload)
 
 
-    def send_contact(
+    async def send_contact(
             self,
             chat_id: str | int,
             phone_number: int,
@@ -147,7 +147,7 @@ class Client:
         return self.request('sendcontact', data=payload)
 
 
-    def send_photo(
+    async def send_photo(
             self,
             chat_id: str | int,
             from_chat_id: str | int,
@@ -173,7 +173,7 @@ class Client:
         )
 
 
-    def send_audio(
+    async def send_audio(
             self,
             chat_id: str | int,
             file: str | bytes,
@@ -197,7 +197,7 @@ class Client:
         )
 
 
-    def send_document(
+    async def send_document(
             self,
             chat_id: str | int,
             file: str | bytes,
@@ -235,7 +235,7 @@ class Client:
         )
 
 
-    def send_animation(
+    async def send_animation(
             self,
             chat_id: str | int,
             file: str | bytes,
@@ -258,7 +258,7 @@ class Client:
         )
 
 
-    def send_voice(
+    async def send_voice(
             self,
             chat_id: str | int,
             file: str | bytes,
@@ -282,7 +282,7 @@ class Client:
         )
 
 
-    def send_location(
+    async def send_location(
             self,
             chat_id: str | int,
             latitude: float,
@@ -323,7 +323,7 @@ class Client:
         )
 
 
-    def set_webhook(self, url: str) -> dict:
+    async def set_webhook(self, url: str) -> dict:
         '''This method is used to specify an outgoing webhook URL'''
         payload: dict = {
             'url': url
@@ -331,16 +331,16 @@ class Client:
         return self.request('setwebhook', data=payload)
 
 
-    def delete_webhook(self) -> dict:
+    async def delete_webhook(self) -> dict:
         return self.request(method='deletewebhook')
 
 
-    def get_webhook_info(self) -> dict:
+    async def get_webhook_info(self) -> dict:
         '''Use this method to get the current state of the webhook'''
         return self.request(data='getwebhookinfo')
 
 
-    def webhook_info(self, url: str) -> dict:
+    async def webhook_info(self, url: str) -> dict:
         '''Displays the current state of a webhook'''
         payload: dict = {
             'url': url
@@ -348,12 +348,12 @@ class Client:
         return self.request('webhookinfo', data=payload)
 
 
-    def get_me(self) -> dict:
+    async def get_me(self) -> dict:
         '''get bot account information'''
         return self.request(method='getme')
 
 
-    def get_chat(self, chat_id: str) -> dict:
+    async def get_chat(self, chat_id: str) -> dict:
         '''This method is used to get up-to-date information
         about the conversation (current username for one-to-one conversations,
         current username of a user, group or channel).
@@ -368,7 +368,7 @@ class Client:
         return self.request('getchat', data=payload)
 
 
-    def leave_chat(self, chat_id: str) -> dict:
+    async def leave_chat(self, chat_id: str) -> dict:
         '''This method is used for the arm to leave a group, group or channel
         :param chat_id:
             Conversation ID. requirement**
@@ -381,14 +381,14 @@ class Client:
         return self.request('leavechat', data=payload)
 
 
-    def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
+    async def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
         payload: dict = {
             'offset': offset, 'limit': limit
         }
         return self.request('getupdates', data=payload)
 
 
-    def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
+    async def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
         payload: dict = {
             'chat_id': chat_id
         }
@@ -405,21 +405,21 @@ class Client:
 
 
 
-    def get_chat_members_count(self, chat_id: str) -> dict:
+    async def get_chat_members_count(self, chat_id: str) -> dict:
         payload: dict = {
             'chat_id': chat_id
         }
         return self.request('getchatmemberscount', data=payload)
 
 
-    def get_chat_member(self, chat_id: str, user_id: str) -> dict:
+    async def get_chat_member(self, chat_id: str, user_id: str) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
         return self.request('getchatmember', data=payload)
 
 
-    def set_chat_photo(self, chat_id: str | int, photo = str | bytes) -> dict:
+    async def set_chat_photo(self, chat_id: str | int, photo = str | bytes) -> dict:
         files: dict = {
             'photo': open(file, 'rb')
         }
@@ -429,21 +429,21 @@ class Client:
         return self.request('setchatphoto', data=values, files=files)
 
 
-    def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
+    async def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
         return self.request('banchatmember', data=payload)
 
 
-    def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
+    async def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
         return self.request('unbanchatmember', data=payload)
 
 
-    def get_file(self, file_id: str) -> dict:
+    async def get_file(self, file_id: str) -> dict:
         '''This method is used to get the basic information
         of a file and prepare it for download.
         :param file_id:

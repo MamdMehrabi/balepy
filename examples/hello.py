@@ -1,16 +1,18 @@
 from balepy import Client
+import asyncio
 
-# Enter Your Token:
-token = ""
 
-client = Client(token, timeout=10)
-def main():
+__token = 'your-token-here'
+
+client = Client(__token, 10)
+async def main():
     for update in client.on_message():
-        client.send_message(
+        await client.send_message(
             chat_id=update.chat_id,
-            text=f'Hello {update.author_first_name} __from__ **balepy**',
-            reply_to_message_id=update.update_id
+            text='Hello __from__ **balepy**',
+            reply_to_message_id=update.message_id
         )
 
+
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
