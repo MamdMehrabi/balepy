@@ -15,10 +15,9 @@ pip install -U balepy
 ```python
 from balepy import Client
 
-
 client = Client('TOKEN')
 
-async def main():
+def main():
     for update in client.on_message():
         client.send_message(
             chat_id=update.chat_id,
