@@ -1,13 +1,13 @@
 from balepy import Client
 
-token = ""
+token = "786709312:xLUHc77Oxuqvbly8Y2QbBnoRFVooOBbuMJLW3LOc"
 
 client = Client(token, timeout=10)
 def main():
     for update in client.on_message():
         client.send_message(
             chat_id=update.chat_id,
-            text='Hello __from__ **balepy**',
+            text=f'Hello {update.author_first_name} __from__ **balepy**',
             reply_to_message_id=update.update_id
         )
 

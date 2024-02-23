@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'balepy',
-    version = '1.2',
+    version = '1.3',
     author='Mohammad, AmirAli',
     author_email = 'mohammadmehrabi175@gmail.com',
     description = 'balepy a Library Python for create bots API in bale application',
@@ -12,7 +12,7 @@ setup(
     long_description_content_type = 'text/markdown',
     url = 'https://github.com/OnlyRad/balepy',
     packages = find_packages(),
-    install_requires = [],
+    install_requires = ["requests", "aiohttp"],
     classifiers = [
     	"Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
