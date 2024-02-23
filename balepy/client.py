@@ -1,5 +1,5 @@
 import asyncio, aiohttp, requests
-import util
+from .util import message
 
 class Client:
 
@@ -9,8 +9,6 @@ class Client:
 
         if not token:
             raise ValueError('`token` did\'t passed')
-        elif len(token) > 50 or len(token) < 50:
-            raise Exception("not found token")
 
     async def execute(self, method: str, data: dict = None) -> dict:
         url: str = f'https://tapi.bale.ai/bot{self.token}/{method}'
@@ -51,7 +49,7 @@ class Client:
             responce = self.request('getupdates', data=payload)
             if responce != None and responce['result'] != []:
                 payload['offset'] += 1
-                yield util.message(responce['result'][0])
+                yield message(responce['result'][0])
 
 
     def send_message(

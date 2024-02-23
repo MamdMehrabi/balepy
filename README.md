@@ -2,8 +2,8 @@
 
 <h3 align="center"> balepy a Library Python for create bot API in bale application </h3>
 
-> ## Install and Update:
-```python
+## Install and Update:
+```bash
 pip install -U balepy
 ```
 
@@ -11,19 +11,25 @@ pip install -U balepy
 ### <a href="https://balepy.github.io">WebSite</a>
 ### <a href="https://t.me/TheCommit">TELEGRAM</a>
 
-> ## START:
+## START:
 ```python
 from balepy import Client
-from asyncio import run
 
-bot = Client("TOKEN")
+
+client = Client('TOKEN')
 
 async def main():
-    await bot.send_message(91837181, "Hello World")
+    for update in client.on_message():
+        client.send_message(
+            chat_id=update.chat_id,
+            text='Hello __from__ *balepy*',
+            reply_to_message_id=update.update_id
+        )
 
-run(main())
+if __name__ == '__main__':
+    main()
 ```
 
-> ## Social Media:
+## Social Media:
 #### <a href="https://t.me/TheCommit">TELEGRAM</a>
 #### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
