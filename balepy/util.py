@@ -63,19 +63,11 @@ class message:
 
     @property
     def message_id(self):
-        if 'reply_to_message' in self.message:
-            return self.message['reply_to_message']['message_id']
-        else:
-            return False
-
-    @property
-    def is_forward(self):
-        if 'forward_from' in self.message:
-            return True
-        elif 'forward_from_chat' in self.message:
-            return True
-        else:
-            return False
+        # if 'reply_to_message' in self.message:
+        #     return self.message['reply_to_message']['message_id']
+        # else:
+        #     return False
+        return self.message['message_id']
 
     @property
     def forward_from_id(self):
@@ -88,11 +80,11 @@ class message:
 
     @property
     def text(self):
-        if 'text' in self.message:
+        try:
             return self.message['text']
-        elif 'caption' in self.message:
+        except KeyError:
             return self.message['caption']
-        else:
+        except:
             return None
 
     @property
