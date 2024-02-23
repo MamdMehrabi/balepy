@@ -1,4 +1,4 @@
-from client import Client
+from .client import Client
 
 __title__: str = 'balepy'
 __version__: str = '1.1.1.1'

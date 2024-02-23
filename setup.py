@@ -12,7 +12,7 @@ setup(
     long_description_content_type = 'text/markdown',
     url = 'https://github.com/OnlyRad/balepy',
     packages = find_packages(),
-    install_requires = [],
+    install_requires = ['requests'],
     classifiers = [
     	"Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
