@@ -10,6 +10,7 @@ async def main():
             m.text,
             m.update_id
         )
+        print(m.message)
 
 if __name__ == '__main__':
     run(main())
