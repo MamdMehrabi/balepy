@@ -32,7 +32,7 @@ if __name__ == '__main__':
 ```
 
 ## Thanks To:
-### <a href="">AmirAli</a>
+### <a href="https://github.com/metect">AmirAli</a>
 ### <a href="">Erfan</a>
 
 ## Social Media:
