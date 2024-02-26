@@ -31,6 +31,10 @@ if __name__ == '__main__':
     asyncio.run(main())
 ```
 
+## Thanks To:
+### <a href="">AmirAli</a>
+### <a href="">Erfan</a>
+
 ## Social Media:
 #### <a href="https://t.me/TheCommit">TELEGRAM</a>
 #### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
