@@ -14,19 +14,29 @@ pip install -U balepy
 ## START:
 ```python
 from balepy import Client
-import asyncio
+from asyncio import run
+
 
 __token = 'your-token-here'
-client = Client(__token, timeout=10)
+app = Client(__token, timeout=10)
 
 async def main():
-    for update in client.on_message():
-        await client.send_message(
-            chat_id=update.chat_id,
+    for m in app.on_message():
+        await app.send_message(
+            chat_id=m.chat_id,
             text='Hello __from__ *balepy*',
-            reply_to_message_id=update.message_id
+            reply_to_message_id=m.message_id
         )
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    run(main())
 ```
+
+
+## Thanks To:
+### <a href="https://github.com/metect">AmirAli</a>
+
+## Social Media:
+#### <a href="https://t.me/TheCommit">TELEGRAM</a>
+#### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
+>>>>>>> 0e071c80ce8704bb2ac6cb54c44e34c39c125ead
