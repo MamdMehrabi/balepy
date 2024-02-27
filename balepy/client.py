@@ -1,4 +1,4 @@
-from .util import message
+from util import message
 import requests
 
 
@@ -157,7 +157,7 @@ class Client:
             reply_markup: int = None
     ) -> dict:
         files: dict = {
-            'photo': open(file, 'rn')
+            'photo': open(file, 'rb')
         }
         values: dict = {
             'chat_id': chat_id,
