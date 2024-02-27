@@ -39,4 +39,3 @@ if __name__ == '__main__':
 ## Social Media:
 #### <a href="https://t.me/TheCommit">TELEGRAM</a>
 #### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
->>>>>>> 0e071c80ce8704bb2ac6cb54c44e34c39c125ead
