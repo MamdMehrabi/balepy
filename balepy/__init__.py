@@ -2,7 +2,7 @@ from .client import Client
 from .util import message
 
 __title__: str = 'balepy'
-__version__: str = '1.3.2'
+__version__: str = '1.3.5'
 __license__: str = 'MIT license'
 __author__: str = 'Mamad Mehrabi Rad'
 __url__: str = 'https://github.com/OnlyRad/balepy'
