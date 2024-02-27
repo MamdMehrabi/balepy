@@ -24,13 +24,9 @@ async def main():
         await client.send_message(
             chat_id=update.chat_id,
             text='Hello __from__ *balepy*',
-            reply_to_message_id=update.update_id
+            reply_to_message_id=update.message_id
         )
 
 if __name__ == '__main__':
     asyncio.run(main())
 ```
-
-## Social Media:
-#### <a href="https://t.me/TheCommit">TELEGRAM</a>
-#### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
