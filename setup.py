@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'balepy',
-    version = '1.3.6.3',
+    version = '1.3.6.5',
     author='Mohammad, AmirAli',
     author_email = 'mohammadmehrabi175@gmail.com',
     description = 'balepy a Library Python for create bots API in bale application',
