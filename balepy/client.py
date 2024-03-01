@@ -11,6 +11,7 @@ class Client:
 
         if not token:
             raise ValueError('`token` did\'t passed')
+    
 
     async def execute(self, method: str, data: dict = None) -> dict:
         url: str = f'https://tapi.bale.ai/bot{self.token}/{method}'

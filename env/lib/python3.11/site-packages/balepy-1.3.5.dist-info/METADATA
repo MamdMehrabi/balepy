@@ -1,0 +1,63 @@
+Metadata-Version: 2.1
+Name: balepy
+Version: 1.3.5
+Summary: balepy a Library Python for create bots API in bale application
+Home-page: https://github.com/OnlyRad/balepy
+Author: Mohammad, AmirAli
+Author-email: mohammadmehrabi175@gmail.com
+Keywords: bot,Bot,bale,robot,messangers
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: ~=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp
+Requires-Dist: requests
+
+# balepy
+
+<h3 align="center"> balepy a Library Python for create bot API in bale application </h3>
+
+## Install and Update:
+```bash
+pip install -U balepy
+```
+
+## For See Docs:
+- <a href="https://balepy.github.io">WebSite</a>
+- <a href="https://t.me/TheCommit">TELEGRAM</a>
+
+## START:
+```python
+from balepy import Client
+from asyncio import run
+
+
+__token = 'your-token-here'
+app = Client(__token, timeout=10)
+
+async def main():
+    for m in app.on_message():
+        await app.send_message(
+            chat_id=m.chat_id,
+            text='Hello __from__ *balepy*',
+            reply_to_message_id=m.message_id
+        )
+
+if __name__ == '__main__':
+    run(main())
+```
+
+
+## Thanks To:
+### <a href="https://github.com/metect">AmirAli</a>
+
+## Social Media:
+#### <a href="https://t.me/TheCommit">TELEGRAM</a>
+#### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
