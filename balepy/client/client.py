@@ -1,10 +1,11 @@
 from balepy.filters import Filters
 from balepy.util import message
 
+from asyncio import run
 import requests
 import aiohttp
 
-class Client:
+class Client(message):
 
     def __init__(self, token: str, timeout: float = 20) -> None:
         self.token: str = token
@@ -62,7 +63,7 @@ class Client:
                 payload['offset'] += 1
                 yield message(responce['result'][0])
 
-
+    @staticmethod
     async def send_message(
             self,
             chat_id: str | int,
@@ -89,7 +90,6 @@ class Client:
             'reply_to_message_id': reply_to_message_id
         }
         return await self.request('sendmessage', data=payload)
-
 
     async def edit_message(
             self,

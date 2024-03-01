@@ -1,6 +1,6 @@
-# from balepy.client import Client
+from balepy.client import Client
 
-class message:
+class message(Client):
 
     def __init__(self, data: dict) -> str:
         self.data: dict = data
@@ -114,3 +114,6 @@ class message:
                 return 'audio'
         else:
             return None
+
+    def reply(self, text):
+        Client.send_message(message.chat_id, text, message.update_id)
