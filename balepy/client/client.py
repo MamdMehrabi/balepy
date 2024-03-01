@@ -33,7 +33,7 @@ class Client:
         except Exception as err:
             print(__file__, err, __file__)
 
-    def on_message(self, Filters):
+    def on_message(self, Filters = None):
         '''Use this method to receive updates
         Example:
             from balepy import Client
