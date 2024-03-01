@@ -1,4 +1,6 @@
-from .util import message
+from ..filters import Filters
+from ..util import message
+
 import requests
 import aiohttp
 
@@ -31,7 +33,7 @@ class Client:
         except Exception as err:
             print(__file__, err, __file__)
 
-    def on_message(self):
+    def on_message(self, Filters):
         '''Use this method to receive updates
         Example:
             from balepy import Client
