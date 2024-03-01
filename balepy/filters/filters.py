@@ -1,4 +1,4 @@
-from ..util import message
+from balepy.util import message
 
 class Filters(message):
 

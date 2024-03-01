@@ -1,5 +1,5 @@
-from ..filters import Filters
-from ..util import message
+from balepy.filters import Filters
+from balepy.util import message
 
 import requests
 import aiohttp
@@ -229,6 +229,7 @@ class Client:
             chat_id: str | int,
             file: str | bytes,
             reply_to_message_id: int = None,
+            caption: str = None,
             reply_markup: int = None
     ) -> dict:
         '''This method is used to send animation files (GIF video or H.264/MPEG-4 AVC without sound)'''
@@ -393,7 +394,7 @@ class Client:
 
     async def set_chat_photo(self, chat_id: str | int, photo = str | bytes) -> dict:
         files: dict = {
-            'photo': open(file, 'rb')
+            'photo': open(photo, 'rb')
         }
         values: dict = {
             'chat_id': chat_id
