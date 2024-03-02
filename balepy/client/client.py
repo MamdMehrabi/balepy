@@ -65,7 +65,6 @@ class Client(message):
 
     @staticmethod
     async def send_message(
-            self,
             chat_id: str | int,
             text: str,
             reply_markup: int = None,
@@ -320,7 +319,6 @@ class Client(message):
             'url': url
         }
         return await self.request('webhookinfo', data=payload)
-
 
     async def get_me(self) -> dict:
         '''get bot account information'''
