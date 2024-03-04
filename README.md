@@ -9,7 +9,7 @@ pip install -U balepy
 
 ## For See Docs:
 - <a href="https://balepy.github.io">WebSite</a>
-- <a href="https://t.me/TheCommit">TELEGRAM</a>
+- <a href="https://t.me/TheCommit">Telegram</a>
 
 ## START:
 ```python
