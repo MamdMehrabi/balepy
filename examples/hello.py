@@ -1,4 +1,4 @@
-from balepy import Client, Filters
+from balepy import Client
 from asyncio import run
 
 
@@ -8,8 +8,7 @@ client = Client(__token, 10)
 async def main():
     for update in client.on_message():
         channel = update.message["chat"]["type"]
-        if Filters.Channel:
-        #if channel == 'channel' and update.text == 'start':
+        if update.Channel:
             print(update.message)
             await client.send_message(
                 chat_id=update.chat_id,

@@ -1,4 +1,3 @@
-from balepy.filters import Filters
 from balepy.util import message
 
 from asyncio import run

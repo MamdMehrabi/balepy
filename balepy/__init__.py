@@ -1,6 +1,5 @@
 from .client import Client
 from .util import message
-from .filters import Filters
 
 __title__: str = 'balepy'
 __version__: str = '1.3.6'
