@@ -1,4 +1,4 @@
-from balepy.util import message
+from .util import message
 
 from asyncio import run
 import requests

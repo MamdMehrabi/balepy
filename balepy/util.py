@@ -1,4 +1,4 @@
-from balepy.client import Client
+from .client import Client
 
 class message(Client):
 
