@@ -134,6 +134,3 @@ class message(Client):
     def new_chat_members(self):
         if self.message['new_chat_members']:
             return self.message
-
-    def reply(self, text):
-        Client.send_message(message.chat_id, text, message.update_id)
