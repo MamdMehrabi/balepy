@@ -13,23 +13,23 @@ pip install -U balepy
 
 ## START:
 ```python
-from balepy import Client
-from asyncio import run
+from bale import Client
+import asyncio
 
 
 __token = 'your-token-here'
-app = Client(__token, timeout=10)
+client = Client(__token, timeout=10)
 
 async def main():
-    for m in app.on_message():
-        await app.send_message(
-            chat_id=m.chat_id,
+    for update in client.on_message():
+        await client.send_message(
+            chat_id=client.chat_id,
             text='Hello __from__ *balepy*',
-            reply_to_message_id=m.message_id
+            reply_to_message_id=client.message_id
         )
 
 if __name__ == '__main__':
-    run(main())
+    asyncio.run(main())
 ```
 
 
