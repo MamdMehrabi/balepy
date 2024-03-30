@@ -1,9 +1,8 @@
-from .client import Client
 
-class message(Client):
+class message:
 
-    def __init__(self, data: dict) -> str:
-        self.data: dict = data
+    def __init__(self, data: dict):
+        self.data = data
 
     @property
     def message(self):
@@ -11,6 +10,13 @@ class message(Client):
             return self.data['callback_query']['message']
         elif 'message' in self.data:
             return self.data['message']
+
+    @property
+    def is_callback(self):
+        if 'callback_query' in self.data:
+            return True
+        else:
+            return False
 
     @property
     def update_id(self):
@@ -25,21 +31,59 @@ class message(Client):
         return self.message['from']['id']
 
     @property
+    def callback_author_id(self):
+        if self.is_callback:
+            return self.data['callback_query']['from']['id']
+        else:
+            return None
+
+    @property
     def is_bot(self):
         return self.message['from']['is_bot']
+
+    @property
+    def callback_is_bot(self):
+        if self.is_callback:
+            return self.data['callback_query']['from']['is_bot']
+        else:
+            return None
 
     @property
     def author_first_name(self):
         return self.message['from']['first_name']
 
     @property
+    def callback_author_first_name(self):
+        if self.is_callback:
+            return self.data['callback_query']['from']['first_name']
+        else:
+            return None
+
+    @property
     def author_last_name(self):
         return self.message['from']['last_name']
+
+    @property
+    def callback_author_last_name(self):
+        if self.is_callback:
+            return self.data['callback_query']['from']['last_name']
+        else:
+            return None
 
     @property
     def author_username(self):
         if 'username' in self.message['from']:
             return self.message['from']['username']
+        else:
+            return None
+
+    @property
+    def callback_author_username(self):
+        if self.is_callback:
+            if 'username' in self.data['callback_query']:
+                return self.data['callback_query']['from']['username']
+            else:
+                return None
         else:
             return None
 
@@ -56,6 +100,90 @@ class message(Client):
         return self.message['chat']['title']
 
     @property
+    def new_member(self):
+        if 'new_chat_members' in self.message:
+            return True
+        else:
+            return False
+
+    @property
+    def new_member_id(self):
+        if self.new_member:
+            return self.message['new_chat_members'][0]['id']
+        else:
+            return None
+
+    @property
+    def new_member_is_bot(self):
+        if self.new_member:
+            return self.message['new_chat_members'][0]['is_bot']
+        else:
+            return None
+
+    @property
+    def new_memberr_first_name(self):
+        if self.new_member:
+            return self.message['new_chat_members'][0]['first_name']
+        else:
+            return None
+
+    @property
+    def new_member_last_name(self):
+        if self.new_member:
+            return self.message['new_chat_members'][0]['last_name']
+        else:
+            return None
+
+    @property
+    def new_member_username(self):
+        if self.new_member and 'username' in self.message['new_chat_members'][0]:
+            return self.message['new_chat_members'][0]['username']
+        else:
+            return None
+
+    @property
+    def left_member(self):
+        if 'left_chat_member' in self.message:
+            return True
+        else:
+            return False
+
+    @property
+    def left_member_id(self):
+        if self.left_member:
+            return self.message['left_chat_member']['id']
+        else:
+            return None
+
+    @property
+    def left_member_is_bot(self):
+        if self.left_member:
+            return self.message['left_chat_member']['is_bot']
+        else:
+            return None
+
+    @property
+    def left_member_first_name(self):
+        if self.left_member:
+            return self.message['left_chat_member']['first_name']
+        else:
+            return None
+
+    @property
+    def left_member_last_name(self):
+        if self.left_member:
+            return self.message['left_chat_member']['last_name']
+        else:
+            return None
+
+    @property
+    def left_member_username(self):
+        if self.left_member and 'username' in self.message['left_chat_member']:
+            return self.message['left_chat_member']['username']
+        else:
+            return None
+
+    @property
     def is_reply(self):
         if 'reply_to_message' in self.message:
             return True
@@ -63,12 +191,27 @@ class message(Client):
             return False
 
     @property
-    def message_id(self):
-        # if 'reply_to_message' in self.message:
-        #     return self.message['reply_to_message']['message_id']
-        # else:
-        #     return False
-        return self.message['message_id']
+    def reply_message_id(self):
+        if 'reply_to_message' in self.message:
+            return self.message['reply_to_message']['message_id']
+        else:
+            return False
+
+    @property
+    def reply_data(self):
+        if 'reply_to_message' in self.message:
+            return self.message['reply_to_message']
+        else:
+            return False
+
+    @property
+    def is_forward(self):
+        if 'forward_from' in self.message:
+            return True
+        elif 'forward_from_chat' in self.message:
+            return True
+        else:
+            return False
 
     @property
     def forward_from_id(self):
@@ -80,12 +223,53 @@ class message(Client):
             return None
 
     @property
+    def forward_from_message_id(self):
+        if 'forward_from_message_id' in self.message:
+            return self.message['forward_from_message_id']
+        else:
+            return None
+
+    @property
+    def forward_from_is_bot(self):
+        if 'forward_from' in self.message:
+            return self.message['forward_from']['is_bot']
+        else:
+            return None
+
+    @property
+    def forward_from_is_bot(self):
+        if self.is_forward:
+            return self.message['forward_from']['is_bot']
+        else:
+            return None
+
+    @property
     def text(self):
-        try:
+        if 'text' in self.message:
             return self.message['text']
-        except KeyError:
+        elif 'caption' in self.message:
             return self.message['caption']
-        except:
+        else:
+            return None
+
+    @property
+    def callback_data_send(self):
+        if self.is_callback:
+            return self.data['callback_query']['data']
+        else:
+            return None
+
+    @property
+    def file_data(self):
+        if 'photo' in self.message:
+            return self.message['photo']
+        elif 'video' in self.message:
+            return self.message['video']
+        elif 'document' in self.message:
+            return self.message['document']
+        elif 'audio' in self.message:
+            return self.message['audio']
+        else:
             return None
 
     @property
@@ -114,23 +298,3 @@ class message(Client):
                 return 'audio'
         else:
             return None
-    
-    @property
-    def private(self):
-        if self.message['chat']['type'] == 'private':
-            return self.message
-    
-    @property
-    def group(self):
-        if self.message['chat']['type'] == 'group':
-            return self.message
-    
-    @property
-    def Channel(self):
-        if self.message['chat']['type'] == 'channel':
-            return self.message
-        
-    @property
-    def new_chat_members(self):
-        if self.message['new_chat_members']:
-            return self.message
