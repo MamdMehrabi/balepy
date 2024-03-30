@@ -1,14 +1,16 @@
-from balepy import Client
-from asyncio import run
+from client import Client
+import asyncio
 
 
-__token = '786709312:KejLTbe8HXUBDg34n9jY6iSLJrof5bCU7HJeelkB'
-
-client = Client(__token)
+client = Client('YOUR_TOKEN_HERE')
 async def main():
-    for m in client.on_message():
-        if m.group:
-            print(m)
+    for update in client.on_message():
+        await client.send_message(
+            chat_id=update.chat_id,
+            text='hello __from__ **balepy**',
+            reply_to_message_id=update.message_id
+        )
+
 
 if __name__ == '__main__':
-    run(main())
+    asyncio.run(main())

@@ -1,17 +1,16 @@
-from balepy import Client
-from asyncio import run
+from bale import Client
+import asyncio
 
-bot = Client("1441486284:cPrIulYXdRkkpyxDX5L7qWueOJubOcHYI11fYSYn")
 
+client = Client('YOUR_TOKEN_HERE')
 async def main():
-    for m in bot.on_message():
-        await bot.send_message(
-            chat_id=m.chat_id,
-            text=m.text,
-            reply_to_message_id=m.message_id
+    for upadte in client.on_message():
+        await client.send_message(
+            chat_id=upadte.chat_id,
+            text=upadte.text,
+            reply_to_message_id=upadte.message_id
         )
-        print(m.message)
 
 
 if __name__ == '__main__':
-    run(main())
+    asyncio.run(main())
