@@ -3,8 +3,8 @@ from network import Network
 class message:
 
     def __init__(self, data: dict, token: str, timeout: float):
-        self.data = data
         self.network = Network(token=token, timeout=timeout)
+        self.data = data
 
     async def reply(self, text: str) -> dict:
         payload: dict = {
