@@ -369,7 +369,7 @@ class Client:
         payload: dict = {
             'chat_id': chat_id
         }
-        responce = self.request('getchatadministrators', data=payload)
+        responce = await self.request('getchatadministrators', data=payload)
 
         if just_get_id:
             ids = []
