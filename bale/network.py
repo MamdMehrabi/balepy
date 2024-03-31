@@ -14,5 +14,5 @@ class Network:
         return self.session.close()
 
     async def connect(self, method: str, data: dict = None, files: dict = None) -> requests.Response:
-        with self.session.request('post', url= self.url + method, timeout=self.timeout, data=data, files=files) as response:
+        with self.session.request('post', url=self.url + method, timeout=self.timeout, data=data, files=files) as response:
             return response.json()
