@@ -15,10 +15,10 @@ class Client:
             raise TokenNotInvalid('`token` did\'t passed')
 
     async def request(self, method: str, data: dict = None, files: dict = None) -> dict:
-        # try:
+        try:
             return await self.network.connect(method=method, data=data, files=files)
-        # except Exception as err:
-        #     print(__file__, err, __file__)
+        except Exception as err:
+            print(__file__, err, __file__)
 
     async def on_message(self):
         '''Use this method to receive updates
@@ -30,6 +30,7 @@ class Client:
             async def main():
                 for update in client.on_message():
                     print(update.text)
+                    await update.reply('hello __from__ **balepy**')
 
             asyncio.run(main())
         '''
@@ -47,7 +48,8 @@ class Client:
             responce = await self.request('getupdates', payload)
             if responce != None and responce['result'] != []:
                 payload['offset'] += 1
-                yield message(responce['result'][0])
+                yield message(responce['result'][0], self.network.token, self.network.timeout)
+
 
     async def send_message(
             self,
