@@ -35,7 +35,7 @@ class Client:
             asyncio.run(main())
         '''
         payload: dict = {
-            'offset': -1, 'limit': 100
+            'offset': 0, 'limit': 100
         }
         while True:
             update = await self.request('getupdates', payload)
