@@ -92,7 +92,7 @@ class Client:
             'reply_to_message_id': message_id,
             'reply_markup': reply_markup
         }
-        return self.request('editmessage', data=payload)
+        return await self.request('editmessage', data=payload)
 
 
     async def forward_message(
@@ -104,14 +104,14 @@ class Client:
         payload: dict = {
             'chat_id': chat_id, 'from_chat_id': from_chat_id, 'message_id': message_id
         }
-        return self.request('forwardmessage', data=payload)
+        return await self.request('forwardmessage', data=payload)
 
 
     async def delete_message(self, chat_id: str | int, message_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'reply_to_message_id': message_id
         }
-        return self.request('deletemessage', data=payload)
+        return await self.request('deletemessage', data=payload)
 
 
     async def send_contact(
@@ -143,7 +143,7 @@ class Client:
             'last_name': last_name,
             'reply_to_message_id': reply_to_message_id
         }
-        return self.request('sendcontact', data=payload)
+        return await self.request('sendcontact', data=payload)
 
 
     async def send_photo(
@@ -165,7 +165,7 @@ class Client:
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendphoto', data=payload, files=files)
+        return await self.request('sendphoto', data=payload, files=files)
 
 
     async def send_audio(
@@ -185,7 +185,7 @@ class Client:
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendaudio', data=payload, files=files)
+        return await self.request('sendaudio', data=payload, files=files)
 
 
     async def send_document(
@@ -240,7 +240,7 @@ class Client:
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendanimation', data=payload, files=files)
+        return await self.request('sendanimation', data=payload, files=files)
 
 
 
@@ -261,7 +261,7 @@ class Client:
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendvoice', data=payload, files=files)
+        return await self.request('sendvoice', data=payload, files=files)
 
 
     async def send_location(
@@ -298,7 +298,7 @@ class Client:
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendlocation', data=payload)
+        return await self.request('sendlocation', data=payload)
 
 
     async def set_webhook(self, url: str) -> dict:
@@ -310,12 +310,12 @@ class Client:
 
 
     async def delete_webhook(self) -> dict:
-        return self.request(method='deletewebhook')
+        return await self.request(method='deletewebhook')
 
 
     async def get_webhook_info(self) -> dict:
         '''Use this method to get the current state of the webhook'''
-        return self.request(data='getwebhookinfo')
+        return await self.request(data='getwebhookinfo')
 
 
     async def webhook_info(self, url: str) -> dict:
@@ -323,11 +323,11 @@ class Client:
         payload: dict = {
             'url': url
         }
-        return self.request('webhookinfo', data=payload)
+        return await self.request('webhookinfo', data=payload)
 
     async def get_me(self) -> dict:
         '''get bot account information'''
-        return self.request(method='getme')
+        return await self.request(method='getme')
 
 
     async def get_chat(self, chat_id: str) -> dict:
@@ -342,7 +342,7 @@ class Client:
         payload: dict = {
             'chat_id': chat_id
         }
-        return self.request('getchat', data=payload)
+        return await self.request('getchat', data=payload)
 
 
     async def leave_chat(self, chat_id: str) -> dict:
@@ -355,14 +355,14 @@ class Client:
         payload: dict = {
             'chat_id': chat_id
         }
-        return self.request('leavechat', data=payload)
+        return await self.request('leavechat', data=payload)
 
 
     async def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
         payload: dict = {
             'offset': offset, 'limit': limit
         }
-        return self.request('getupdates', data=payload)
+        return await self.request('getupdates', data=payload)
 
 
     async def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
@@ -385,14 +385,14 @@ class Client:
         payload: dict = {
             'chat_id': chat_id
         }
-        return self.request('getchatmemberscount', data=payload)
+        return await self.request('getchatmemberscount', data=payload)
 
 
     async def get_chat_member(self, chat_id: str, user_id: str) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
-        return self.request('getchatmember', data=payload)
+        return await self.request('getchatmember', data=payload)
 
 
     async def set_chat_photo(self, chat_id: str | int, file = str | bytes) -> dict:
@@ -402,21 +402,21 @@ class Client:
         payload: dict = {
             'chat_id': chat_id,
         }
-        return self.request('setchatphoto', data=payload, files=files)
+        return await self.request('setchatphoto', data=payload, files=files)
 
 
     async def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
-        return self.request('banchatmember', data=payload)
+        return await self.request('banchatmember', data=payload)
 
 
     async def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
-        return self.request('unbanchatmember', data=payload)
+        return await self.request('unbanchatmember', data=payload)
 
 
     async def get_file(self, file_id: str) -> dict:
@@ -430,4 +430,4 @@ class Client:
         payload: dict = {
             'file_id': file_id
         }
-        return self.request('getfile', data=payload)
+        return await self.request('getfile', data=payload)
