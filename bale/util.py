@@ -298,3 +298,13 @@ class message:
                 return 'audio'
         else:
             return None
+    
+    @property
+    def groups(self):
+        if self.message["chat"]["type"] == 'group':
+            return self.message
+    
+    @property
+    def private(self):
+        if self.message["chat"]["type"] == 'private':
+            return self.message
