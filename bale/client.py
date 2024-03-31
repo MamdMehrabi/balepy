@@ -1,6 +1,6 @@
-from .network import Network
-from .util import message
-from .exceptions import *
+from network import Network
+from util import message
+from exceptions import *
 
 import asyncio
 
@@ -14,20 +14,20 @@ class Client:
         if not token:
             raise TokenNotInvalid('`token` did\'t passed')
 
-    def request(self, method: str, data: dict = None, request_method: str = 'post') -> dict:
-        try:
-            return self.network.connect(method=method, data=data, request_method=request_method)
-        except Exception as err:
-            print(__file__, err, __file__)
+    async def request(self, method: str, data: dict = None, files: dict = None) -> dict:
+        # try:
+            return await self.network.connect(method=method, data=data, files=files)
+        # except Exception as err:
+        #     print(__file__, err, __file__)
 
-    def on_message(self):
+    async def on_message(self):
         '''Use this method to receive updates
         Example:
-            from balepy import Client
+            from bale import Client
             import asyncio
 
             client = Client('token', timeout=10)
-            def main():
+            async def main():
                 for update in client.on_message():
                     print(update.text)
 
@@ -37,14 +37,14 @@ class Client:
             'offset': -1, 'limit': 100
         }
         while True:
-            update = self.request('getupdates', payload, 'post')
+            update = await self.request('getupdates', payload)
             payload['offset'] = 1
             if (update != None) and (update['ok']) and (update['result'] != []):
                 break
 
         payload['offset'], payload['limit'] = update['result'][len(update['result'])-1]['update_id'], 1
         while True:
-            responce = self.request('getupdates', payload, 'post')
+            responce = await self.request('getupdates', payload)
             if responce != None and responce['result'] != []:
                 payload['offset'] += 1
                 yield message(responce['result'][0])
@@ -74,7 +74,8 @@ class Client:
             'reply_markup': reply_markup,
             'reply_to_message_id': reply_to_message_id
         }
-        return self.request('sendmessage', data=payload)
+        return await self.request('sendmessage', data=payload)
+
 
     async def edit_message(
             self,
@@ -152,15 +153,17 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: int = None
     ) -> dict:
+        files: dict = {
+            'photo': open(file, 'rb')
+        }
         payload: dict = {
             'chat_id': chat_id,
             'from_chat_id': from_chat_id,
-            'photo': open(file, 'rb'),
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendphoto', data=payload)
+        return self.request('sendphoto', data=payload, files=files)
 
 
     async def send_audio(
@@ -171,14 +174,16 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: str = None
     ) -> dict:
+        files: dict = {
+            'audio': open(file, 'rb')
+        }
         payload: dict = {
             'chat_id': chat_id,
-            'audio': open(file, 'rb'),
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendaudio', data=payload)
+        return self.request('sendaudio', data=payload, files=files)
 
 
     async def send_document(
@@ -203,14 +208,16 @@ class Client:
         :return:
             If successful, the sent message will be returned
         '''
+        files: dict = {
+            'document': open(file, 'rb')
+        }
         payload: dict = {
             'chat_id': chat_id,
-            'document': open(file, 'rb'),
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('senddocument', data=payload)
+        return await self.request('senddocument', data=payload, files=files)
 
 
     async def send_animation(
@@ -222,14 +229,16 @@ class Client:
             reply_markup: int = None
     ) -> dict:
         '''This method is used to send animation files (GIF video or H.264/MPEG-4 AVC without sound)'''
+        files: dict = {
+            'animation': open(file, 'rb')
+        }
         payload: dict = {
             'chat_id': chat_id,
-            'animation': open(file, 'rb'),
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendanimation', data=self.form_data)
+        return self.request('sendanimation', data=payload, files=files)
 
 
 
@@ -241,14 +250,16 @@ class Client:
             reply_to_message_id: int = None,
             reply_markup: int = None
     ) -> dict:
+        files: dict = {
+            'voice': open(file, 'rb')
+        }
         payload: dict = {
             'chat_id': chat_id,
-            'voice': open(file, 'rb'),
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
-        return self.request('sendvoice', data=self.form_data)
+        return self.request('sendvoice', data=payload, files=files)
 
 
     async def send_location(
@@ -383,11 +394,13 @@ class Client:
 
 
     async def set_chat_photo(self, chat_id: str | int, file = str | bytes) -> dict:
-        payload: dict = {
-            'chat_id': chat_id,
+        files: dict = {
             'photo': open(file, 'rb')
         }
-        return self.request('setchatphoto', data=payload)
+        payload: dict = {
+            'chat_id': chat_id,
+        }
+        return self.request('setchatphoto', data=payload, files=files)
 
 
     async def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
