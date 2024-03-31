@@ -1,8 +1,18 @@
+from network import Network
 
 class message:
 
-    def __init__(self, data: dict):
+    def __init__(self, data: dict, token: str, timeout: float):
         self.data = data
+        self.network = Network(token=token, timeout=timeout)
+
+    async def reply(self, text: str) -> dict:
+        payload: dict = {
+            'text': text,
+            'chat_id': self.chat_id,
+            'reply_to_message_id': self.message_id
+        }
+        return await self.network.connect('sendmessage', data=payload)
 
     @property
     def message(self):
