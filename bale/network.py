@@ -24,6 +24,7 @@ class Network:
             )
         )
         if responce.status_code != requests.codes.ok:
-            raise exceptions.ConnectionError(responce.status_code, responce.text)
+            raise Exception(responce.status_code + responce.text)
 
-        return responce['result']
+        final_value = responce.json()
+        return final_value['result']
