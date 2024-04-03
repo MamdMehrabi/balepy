@@ -377,13 +377,12 @@ class Client:
         responce = await self.request('getchatadministrators', data=payload)
 
         if just_get_id:
-            ids = []
-            for user in responce:
-                ids.append(user['user']['id'])
+            chat_admins = list()
+            for admin in responce:
+                chat_admins.append(admin['user']['id'])
 
-            return ids
-        else:
-            return responce
+            return chat_admins
+        return responce
 
 
     async def get_chat_members_count(self, chat_id: str) -> dict:
