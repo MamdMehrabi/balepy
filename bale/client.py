@@ -40,15 +40,15 @@ class Client:
         while True:
             update = await self.request('getupdates', payload)
             payload['offset'] = 1
-            if (update != None) and (update['ok']) and (update['result'] != []):
+            if (update != None) and (update != []):
                 break
 
-        payload['offset'], payload['limit'] = update['result'][len(update['result'])-1]['update_id'], 1
+        payload['offset'], payload['limit'] = update[len(update)-1]['update_id'], 1
         while True:
             responce = await self.request('getupdates', payload)
-            if responce != None and responce['result'] != []:
+            if responce != None and responce != []:
                 payload['offset'] += 1
-                yield message(responce['result'][0], self.network.token, self.network.timeout)
+                yield message(responce[0], self.network.token, self.network.timeout)
 
 
     async def send_message(
@@ -358,6 +358,11 @@ class Client:
         return await self.request('leavechat', data=payload)
 
 
+    async def get_chat_invite_link(self, chat_id: str) -> str:
+        chat_data = await self.get_chat(chat_id=chat_id)
+        return chat_data['invite_link']
+
+
     async def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
         payload: dict = {
             'offset': offset, 'limit': limit
@@ -373,7 +378,7 @@ class Client:
 
         if just_get_id:
             ids = []
-            for user in responce['result']:
+            for user in responce:
                 ids.append(user['user']['id'])
 
             return ids
