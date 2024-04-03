@@ -40,7 +40,7 @@ class Client:
         while True:
             update = await self.request('getupdates', payload)
             payload['offset'] = 1
-            if (update != None) and (update != []):
+            if update != None and update != []:
                 break
 
         payload['offset'], payload['limit'] = update[len(update)-1]['update_id'], 1
