@@ -1,4 +1,6 @@
+import exceptions
 import requests
+
 
 class Network:
     def __init__(self, token: str, timeout: float):
@@ -14,5 +16,14 @@ class Network:
         return self.session.close()
 
     async def connect(self, method: str, data: dict = None, files: dict = None) -> requests.Response:
-        with self.session.request('post', url=self.url + method, timeout=self.timeout, data=data, files=files) as response:
-            return response.json()
+        responce = (
+            self.session.request(
+                'post',
+                url=self.url + method,
+                timeout=self.timeout, data=data, files=files
+            )
+        )
+        if responce.status_code != requests.codes.ok:
+            raise exceptions.ConnectionError(responce.status_code, responce.text)
+
+        return responce['result']
