@@ -21,12 +21,9 @@ __token = 'your-token-here'
 client = Client(__token, timeout=10)
 
 async def main():
-    for update in client.on_message():
-        await client.send_message(
-            chat_id=update.chat_id,
-            text='Hello __from__ *balepy*',
-            reply_to_message_id=update.message_id
-        )
+    async for message in client.on_message():
+        await message.reply('hello __from__ **balepy**')
+
 
 if __name__ == '__main__':
     asyncio.run(main())

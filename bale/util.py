@@ -1,7 +1,9 @@
+from network import Network
 
 class message:
 
-    def __init__(self, data: dict):
+    def __init__(self, data: dict, token: str, timeout: float):
+        self.network = Network(token=token, timeout=timeout)
         self.data = data
 
     @property
@@ -298,13 +300,11 @@ class message:
                 return 'audio'
         else:
             return None
-    
-    @property
-    def groups(self):
-        if self.message["chat"]["type"] == 'group':
-            return self.message
-    
-    @property
-    def private(self):
-        if self.message["chat"]["type"] == 'private':
-            return self.message
+
+    async def reply(self, text: str) -> dict:
+        payload: dict = {
+            'text': text,
+            'chat_id': self.chat_id,
+            'reply_to_message_id': self.message_id
+        }
+        return await self.network.connect('sendmessage', data=payload)
