@@ -119,6 +119,13 @@ class Client:
         return self.request('copymessage', data=payload)
 
 
+    async def send_media_group(self, chat_id: str | int, media: list, reply_to_message_id: str) -> dict:
+        payload: dict = {
+            'chat_id': chat_id, 'media': media, 'reply_to_message_id': reply_to_message_id
+        }
+        return self.request('sendmediagroup', data=payload)
+
+
     async def delete_message(self, chat_id: str | int, message_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'reply_to_message_id': message_id
