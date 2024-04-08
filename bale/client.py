@@ -7,9 +7,9 @@ import asyncio
 
 class Client:
 
-    def __init__(self, token: str, timeout: float = 20) -> None:
+    def __init__(self, token: str, proxy: str = None, timeout: float = 20) -> None:
         self.loop = asyncio.get_event_loop()
-        self.network = Network(token=token, timeout=timeout)
+        self.network = Network(token=token, timeout=timeout, proxy=proxy)
 
         if not token:
             raise TokenNotInvalid('`token` did\'t passed')
@@ -28,14 +28,14 @@ class Client:
 
             client = Client('token', timeout=10)
             async def main():
-                for update in client.on_message():
+                async for update in client.on_message():
                     print(update.text)
                     await update.reply('hello __from__ **balepy**')
 
             asyncio.run(main())
         '''
         payload: dict = {
-            'offset': 0, 'limit': 100
+            'offset': -1, 'limit': 100
         }
         while True:
             update = await self.request('getupdates', payload)
@@ -48,8 +48,7 @@ class Client:
             responce = await self.request('getupdates', payload)
             if responce != None and responce != []:
                 payload['offset'] += 1
-                yield message(responce[0], self.network.token, self.network.timeout)
-
+                return message(responce[0], self.network.token, self.network.timeout)
 
     async def send_message(
             self,
