@@ -44,7 +44,10 @@ async def main():
 
         elif message.text.lower() == '/update-admins':
             await message.reply('*Updating the list of admins...*')
-            await update_admin_chat(client=client, chat_id=message.chat_id)
+            try:
+                await update_admin_chat(client=client, chat_id=message.chat_id)
+            except:
+                await message.reply('*Please admin the bot account in your chat*')
             await message.reply('*The list of admins has been successfully updated*')
 
         elif message.text.lower() == '/link':

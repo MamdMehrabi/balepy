@@ -7,9 +7,9 @@ import asyncio
 
 class Client:
 
-    def __init__(self, token: str, timeout: float = 20) -> None:
+    def __init__(self, token: str, proxy: str = None, timeout: float = 20) -> None:
         self.loop = asyncio.get_event_loop()
-        self.network = Network(token=token, timeout=timeout)
+        self.network = Network(token=token, timeout=timeout, proxy=proxy)
 
         if not token:
             raise TokenNotInvalid('`token` did\'t passed')
@@ -28,14 +28,14 @@ class Client:
 
             client = Client('token', timeout=10)
             async def main():
-                for update in client.on_message():
+                async for update in client.on_message():
                     print(update.text)
                     await update.reply('hello __from__ **balepy**')
 
             asyncio.run(main())
         '''
         payload: dict = {
-            'offset': 0, 'limit': 100
+            'offset': -1, 'limit': 100
         }
         while True:
             update = await self.request('getupdates', payload)
@@ -48,8 +48,7 @@ class Client:
             responce = await self.request('getupdates', payload)
             if responce != None and responce != []:
                 payload['offset'] += 1
-                yield message(responce[0], self.network.token, self.network.timeout)
-
+                return message(responce[0], self.network.token, self.network.timeout)
 
     async def send_message(
             self,
@@ -105,6 +104,25 @@ class Client:
             'chat_id': chat_id, 'from_chat_id': from_chat_id, 'message_id': message_id
         }
         return await self.request('forwardmessage', data=payload)
+
+
+    async def copy_message(
+            self,
+            chat_id: str | int,
+            from_chat_id: str | int,
+            message_id: str | int
+    ) -> dict:
+        payload: dict = {
+            'chat_id': chat_id, 'from_chat_id': from_chat_id, 'message_id': message_id
+        }
+        return self.request('copymessage', data=payload)
+
+
+    async def send_media_group(self, chat_id: str | int, media: list, reply_to_message_id: str) -> dict:
+        payload: dict = {
+            'chat_id': chat_id, 'media': media, 'reply_to_message_id': reply_to_message_id
+        }
+        return self.request('sendmediagroup', data=payload)
 
 
     async def delete_message(self, chat_id: str | int, message_id: int) -> dict:
