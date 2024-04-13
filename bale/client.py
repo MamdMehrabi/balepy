@@ -51,7 +51,7 @@ class Client:
                 payload['offset'] += 1
                 yield message(responce[0], self.network.token, self.network.timeout)
 
-    async def on_command(self, commands: list):
+    async def command_handle(self, commands: list):
         async for message in self.on_message():
             if message.text in commands:
                 yield message
