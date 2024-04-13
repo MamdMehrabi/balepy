@@ -142,7 +142,11 @@ class Client:
 
     async def auto_delete_message(self, chat_id: int, message_id: int, time: int) -> dict:
         await asyncio.sleep(delay=time)
-        await self.delete_message(chat_id=chat_id, message_id=message_id)
+        await asyncio.create_task(
+            self.delete_message(
+                chat_id=chat_id, message_id=message_id
+            )
+        )
 
 
     async def send_contact(
