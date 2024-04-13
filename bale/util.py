@@ -1,4 +1,4 @@
-from network import Network
+from .network import Network
 
 class message:
 
@@ -253,6 +253,13 @@ class message:
             return self.message['caption']
         else:
             return None
+
+    @property
+    def has_link(self):
+        if self.text in ['http', '@', 'ble.ir', 'join']:
+            return True
+        else:
+            return False
 
     @property
     def callback_data_send(self):

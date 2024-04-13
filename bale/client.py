@@ -1,24 +1,25 @@
-from network import Network
-from util import message
-from exceptions import *
+from .network import Network
+from .util import message
+from .exceptions import *
 
+from typing import Optional
 import asyncio
 
 
 class Client:
 
-    def __init__(self, token: str, proxy: str = None, timeout: float = 20) -> None:
+    def __init__(self, token: str, timeout: Optional[float] = 20) -> None:
         self.loop = asyncio.get_event_loop()
-        self.network = Network(token=token, timeout=timeout, proxy=proxy)
+        self.network = Network(token=token, timeout=timeout)
 
         if not token:
             raise TokenNotInvalid('`token` did\'t passed')
 
     async def request(self, method: str, data: dict = None, files: dict = None) -> dict:
-        try:
+        # try:
             return await self.network.connect(method=method, data=data, files=files)
-        except Exception as err:
-            print(__file__, err, __file__)
+        # except Exception as err:
+        #     print(__file__, err, __file__)
 
     async def on_message(self):
         '''Use this method to receive updates
@@ -48,14 +49,20 @@ class Client:
             responce = await self.request('getupdates', payload)
             if responce != None and responce != []:
                 payload['offset'] += 1
-                return message(responce[0], self.network.token, self.network.timeout)
+                yield message(responce[0], self.network.token, self.network.timeout)
+
+    async def command_handle(self, commands: list):
+        async for message in self.on_message():
+            if message.text in commands:
+                yield message
 
     async def send_message(
             self,
-            chat_id: str | int,
+            chat_id: int,
             text: str,
-            reply_markup: int = None,
-            reply_to_message_id: int = None
+            reply_markup: Optional[int] = None,
+            reply_to_message_id: Optional[int] = None,
+            auto_delete: Optional[int] = None
     ) -> dict:
         '''Use this method to send text messages
         :param chat_id:
@@ -75,15 +82,26 @@ class Client:
             'reply_markup': reply_markup,
             'reply_to_message_id': reply_to_message_id
         }
-        return await self.request('sendmessage', data=payload)
+        responce = await self.request('sendmessage', data=payload)
+        if isinstance(auto_delete, int):
+            message_id: int = responce['message_id']
+            await asyncio.sleep(delay=auto_delete)
+            callback_data = asyncio.create_task(
+                self.delete_message(
+                    chat_id=chat_id, message_id=message_id
+                )
+            )
+            return callback_data
+
+        return responce
 
 
     async def edit_message(
             self,
-            chat_id: str | int,
+            chat_id: int,
             text: str,
             message_id: int,
-            reply_markup: int = None
+            reply_markup: Optional[int] = None
     ) -> dict:
         payload: dict = {
             'chat_id': chat_id,
@@ -94,51 +112,55 @@ class Client:
         return await self.request('editmessage', data=payload)
 
 
-    async def forward_message(
-            self,
-            chat_id: str | int,
-            from_chat_id: str | int,
-            message_id: int
-    ) -> dict:
+    async def forward_message(self, chat_id: int, from_chat_id: int, message_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'from_chat_id': from_chat_id, 'message_id': message_id
         }
         return await self.request('forwardmessage', data=payload)
 
 
-    async def copy_message(
-            self,
-            chat_id: str | int,
-            from_chat_id: str | int,
-            message_id: str | int
-    ) -> dict:
+    async def copy_message(self, chat_id: int, from_chat_id: int, message_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'from_chat_id': from_chat_id, 'message_id': message_id
         }
         return self.request('copymessage', data=payload)
 
 
-    async def send_media_group(self, chat_id: str | int, media: list, reply_to_message_id: str) -> dict:
+    async def send_media_group(
+            self,
+            chat_id: int,
+            media: list,
+            reply_to_message_id: Optional[int] = None
+    ) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'media': media, 'reply_to_message_id': reply_to_message_id
         }
         return self.request('sendmediagroup', data=payload)
 
 
-    async def delete_message(self, chat_id: str | int, message_id: int) -> dict:
+    async def delete_message(self, chat_id: int, message_id: int) -> dict:
         payload: dict = {
-            'chat_id': chat_id, 'reply_to_message_id': message_id
+            'chat_id': chat_id, 'message_id': message_id
         }
         return await self.request('deletemessage', data=payload)
 
 
+    async def auto_delete_message(self, chat_id: int, message_id: int, time: int) -> dict:
+        await asyncio.sleep(delay=time)
+        await asyncio.create_task(
+            self.delete_message(
+                chat_id=chat_id, message_id=message_id
+            )
+        )
+
+
     async def send_contact(
             self,
-            chat_id: str | int,
+            chat_id: int,
             phone_number: int,
             first_name: str,
-            last_name: str = None,
-            reply_to_message_id: int = None
+            last_name: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None
     ) -> dict:
         '''This method is used to send a phone contact
         :param chat_id:
@@ -166,12 +188,12 @@ class Client:
 
     async def send_photo(
             self,
-            chat_id: str | int,
-            from_chat_id: str | int,
+            chat_id: int,
+            from_chat_id: int,
             file: str | bytes,
-            caption: str = None,
-            reply_to_message_id: int = None,
-            reply_markup: int = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         files: dict = {
             'photo': open(file, 'rb')
@@ -188,11 +210,11 @@ class Client:
 
     async def send_audio(
             self,
-            chat_id: str | int,
+            chat_id: int,
             file: str | bytes,
-            caption: str = None,
-            reply_to_message_id: int = None,
-            reply_markup: str = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         files: dict = {
             'audio': open(file, 'rb')
@@ -208,11 +230,11 @@ class Client:
 
     async def send_document(
             self,
-            chat_id: str | int,
+            chat_id: int,
             file: str | bytes,
-            caption: str = None,
-            reply_to_message_id: int = None,
-            reply_markup: int = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         '''This method is used to send public files.
         :param chat_id:
@@ -242,11 +264,11 @@ class Client:
 
     async def send_animation(
             self,
-            chat_id: str | int,
+            chat_id: int,
             file: str | bytes,
-            reply_to_message_id: int = None,
-            caption: str = None,
-            reply_markup: int = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         '''This method is used to send animation files (GIF video or H.264/MPEG-4 AVC without sound)'''
         files: dict = {
@@ -264,11 +286,11 @@ class Client:
 
     async def send_voice(
             self,
-            chat_id: str | int,
+            chat_id: int,
             file: str | bytes,
-            caption: str,
-            reply_to_message_id: int = None,
-            reply_markup: int = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         files: dict = {
             'voice': open(file, 'rb')
@@ -284,12 +306,12 @@ class Client:
 
     async def send_location(
             self,
-            chat_id: str | int,
+            chat_id: int,
             latitude: float,
             longitude: float,
             horizontal_accuracy: float,
-            reply_to_message_id: int = None,
-            reply_markup: int = None
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         '''This method is used to send a map point
         :param chat_id:
@@ -348,7 +370,7 @@ class Client:
         return await self.request(method='getme')
 
 
-    async def get_chat(self, chat_id: str) -> dict:
+    async def get_chat(self, chat_id: int) -> dict:
         '''This method is used to get up-to-date information
         about the conversation (current username for one-to-one conversations,
         current username of a user, group or channel).
@@ -363,7 +385,7 @@ class Client:
         return await self.request('getchat', data=payload)
 
 
-    async def leave_chat(self, chat_id: str) -> dict:
+    async def leave_chat(self, chat_id: int) -> dict:
         '''This method is used for the arm to leave a group, group or channel
         :param chat_id:
             Conversation ID. requirement**
@@ -376,19 +398,19 @@ class Client:
         return await self.request('leavechat', data=payload)
 
 
-    async def get_chat_invite_link(self, chat_id: str) -> str:
+    async def get_chat_invite_link(self, chat_id: int) -> str:
         chat_data = await self.get_chat(chat_id=chat_id)
         return chat_data['invite_link']
 
 
-    async def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
+    async def get_updates(self, offset: Optional[int] = 0, limit: Optional[int] = 0) -> dict:
         payload: dict = {
             'offset': offset, 'limit': limit
         }
         return await self.request('getupdates', data=payload)
 
 
-    async def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
+    async def get_chat_administrators(self, chat_id: int, just_get_id: Optional[bool] = False) -> dict:
         payload: dict = {
             'chat_id': chat_id
         }
@@ -403,21 +425,21 @@ class Client:
         return responce
 
 
-    async def get_chat_members_count(self, chat_id: str) -> dict:
+    async def get_chat_members_count(self, chat_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id
         }
         return await self.request('getchatmemberscount', data=payload)
 
 
-    async def get_chat_member(self, chat_id: str, user_id: str) -> dict:
+    async def get_chat_member(self, chat_id: int, user_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
         return await self.request('getchatmember', data=payload)
 
 
-    async def set_chat_photo(self, chat_id: str | int, file = str | bytes) -> dict:
+    async def set_chat_photo(self, chat_id: int, file = str | bytes) -> dict:
         files: dict = {
             'photo': open(file, 'rb')
         }
@@ -427,14 +449,14 @@ class Client:
         return await self.request('setchatphoto', data=payload, files=files)
 
 
-    async def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
+    async def ban_chat_member(self, chat_id: int, user_id: int) ->  dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
         return await self.request('banchatmember', data=payload)
 
 
-    async def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
+    async def un_ban_chat_member(self, chat_id: int, user_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
