@@ -1,6 +1,6 @@
-from network import Network
-from util import message
-from exceptions import *
+from .network import Network
+from .util import message
+from .exceptions import *
 
 from typing import Optional
 import asyncio
