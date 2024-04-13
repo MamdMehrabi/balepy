@@ -4,9 +4,8 @@ import requests
 
 class Network:
 
-    def __init__(self, token: str, proxy: str, timeout: float):
+    def __init__(self, token: str, timeout: float):
         self.token: str = token
-        self.proxy: str = proxy
         self.timeout: float = timeout
         self.session: function = requests.session()
 
@@ -22,11 +21,11 @@ class Network:
             self.session.request(
                 'post',
                 url=self.url + method,
-                timeout=self.timeout, data=data, files=files, proxies=self.proxy
+                timeout=self.timeout, data=data, files=files
             )
         )
         if responce.status_code != requests.codes.ok:
-            raise Exception(responce.status_code + responce.text)
+            raise Exception(responce.status_code, responce.text)
 
         final_value = responce.json()
         return final_value['result']
