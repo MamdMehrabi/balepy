@@ -204,11 +204,11 @@ class Client:
 
     async def send_document(
             self,
-            chat_id: str | int,
+            chat_id: int,
             file: str | bytes,
-            caption: str = None,
-            reply_to_message_id: int = None,
-            reply_markup: int = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         '''This method is used to send public files.
         :param chat_id:
@@ -238,11 +238,11 @@ class Client:
 
     async def send_animation(
             self,
-            chat_id: str | int,
+            chat_id: int,
             file: str | bytes,
-            reply_to_message_id: int = None,
-            caption: str = None,
-            reply_markup: int = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         '''This method is used to send animation files (GIF video or H.264/MPEG-4 AVC without sound)'''
         files: dict = {
@@ -260,11 +260,11 @@ class Client:
 
     async def send_voice(
             self,
-            chat_id: str | int,
+            chat_id: int,
             file: str | bytes,
-            caption: str,
-            reply_to_message_id: int = None,
-            reply_markup: int = None
+            caption: Optional[str] = None,
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         files: dict = {
             'voice': open(file, 'rb')
@@ -280,12 +280,12 @@ class Client:
 
     async def send_location(
             self,
-            chat_id: str | int,
+            chat_id: int,
             latitude: float,
             longitude: float,
             horizontal_accuracy: float,
-            reply_to_message_id: int = None,
-            reply_markup: int = None
+            reply_to_message_id: Optional[int] = None,
+            reply_markup: Optional[int] = None
     ) -> dict:
         '''This method is used to send a map point
         :param chat_id:
@@ -344,7 +344,7 @@ class Client:
         return await self.request(method='getme')
 
 
-    async def get_chat(self, chat_id: str) -> dict:
+    async def get_chat(self, chat_id: int) -> dict:
         '''This method is used to get up-to-date information
         about the conversation (current username for one-to-one conversations,
         current username of a user, group or channel).
@@ -359,7 +359,7 @@ class Client:
         return await self.request('getchat', data=payload)
 
 
-    async def leave_chat(self, chat_id: str) -> dict:
+    async def leave_chat(self, chat_id: int) -> dict:
         '''This method is used for the arm to leave a group, group or channel
         :param chat_id:
             Conversation ID. requirement**
@@ -372,19 +372,19 @@ class Client:
         return await self.request('leavechat', data=payload)
 
 
-    async def get_chat_invite_link(self, chat_id: str) -> str:
+    async def get_chat_invite_link(self, chat_id: int) -> str:
         chat_data = await self.get_chat(chat_id=chat_id)
         return chat_data['invite_link']
 
 
-    async def get_updates(self, offset: int = 0, limit: int = 0) -> dict:
+    async def get_updates(self, offset: Optional[int] = 0, limit: Optional[int] = 0) -> dict:
         payload: dict = {
             'offset': offset, 'limit': limit
         }
         return await self.request('getupdates', data=payload)
 
 
-    async def get_chat_administrators(self, chat_id: str, just_get_id: bool = False) -> dict:
+    async def get_chat_administrators(self, chat_id: int, just_get_id: Optional[bool] = False) -> dict:
         payload: dict = {
             'chat_id': chat_id
         }
@@ -399,21 +399,21 @@ class Client:
         return responce
 
 
-    async def get_chat_members_count(self, chat_id: str) -> dict:
+    async def get_chat_members_count(self, chat_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id
         }
         return await self.request('getchatmemberscount', data=payload)
 
 
-    async def get_chat_member(self, chat_id: str, user_id: str) -> dict:
+    async def get_chat_member(self, chat_id: int, user_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
         return await self.request('getchatmember', data=payload)
 
 
-    async def set_chat_photo(self, chat_id: str | int, file = str | bytes) -> dict:
+    async def set_chat_photo(self, chat_id: int, file = str | bytes) -> dict:
         files: dict = {
             'photo': open(file, 'rb')
         }
@@ -423,14 +423,14 @@ class Client:
         return await self.request('setchatphoto', data=payload, files=files)
 
 
-    async def ban_chat_member(self, chat_id: str | int, user_id: str | int) ->  dict:
+    async def ban_chat_member(self, chat_id: int, user_id: int) ->  dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
         return await self.request('banchatmember', data=payload)
 
 
-    async def un_ban_chat_member(self, chat_id: str | int, user_id: str | int) -> dict:
+    async def un_ban_chat_member(self, chat_id: int, user_id: int) -> dict:
         payload: dict = {
             'chat_id': chat_id, 'user_id': user_id
         }
