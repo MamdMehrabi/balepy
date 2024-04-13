@@ -35,10 +35,9 @@ async def main():
     # starting bot and send welcome message
     await startup_bot(client=client, chat_id=chat_id)
     async for message in client.on_message():
-        await check_allowed_message(
-            client=client, chat_id=message.chat_id, text=message.text,
-            user_id=message.author_id, message_id=message.message_id
-        )
+        if message.has_link:
+            await client.delete_message(chat_id=chat_id, message_id=message.message_id)
+
         if message.text.lower() == '/test':
             await message.reply('The bot is now active in your chat')
 
