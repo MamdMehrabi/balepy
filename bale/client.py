@@ -56,7 +56,7 @@ class Client:
             chat_id: int,
             text: str,
             reply_markup: Optional[int] = None,
-            reply_to_message_id: Optional[int] = None
+            reply_to_message_id: Optional[int] = None,
     ) -> dict:
         '''Use this method to send text messages
         :param chat_id:
@@ -126,6 +126,11 @@ class Client:
             'chat_id': chat_id, 'reply_to_message_id': message_id
         }
         return await self.request('deletemessage', data=payload)
+
+
+    async def auto_delete_message(self, chat_id: int, message_id: int, time: int) -> dict:
+        await asyncio.sleep(delay=time)
+        await self.delete_message(chat_id=chat_id, message_id=message_id)
 
 
     async def send_contact(
