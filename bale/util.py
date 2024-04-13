@@ -256,7 +256,7 @@ class message:
 
     @property
     def has_link(self):
-        if ['http', '@', 'ble.ir', 'join'] in self.text:
+        if self.text in ['http', '@', 'ble.ir', 'join']:
             return True
         else:
             return False
