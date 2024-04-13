@@ -8,9 +8,9 @@ import asyncio
 
 class Client:
 
-    def __init__(self, token: str, proxy: Optional[dict] = None, timeout: Optional[float] = 20) -> None:
+    def __init__(self, token: str, timeout: Optional[float] = 20) -> None:
         self.loop = asyncio.get_event_loop()
-        self.network = Network(token=token, timeout=timeout, proxy=proxy)
+        self.network = Network(token=token, timeout=timeout)
 
         if not token:
             raise TokenNotInvalid('`token` did\'t passed')
@@ -57,6 +57,7 @@ class Client:
             text: str,
             reply_markup: Optional[int] = None,
             reply_to_message_id: Optional[int] = None,
+            auto_delete: Optional[int] = None
     ) -> dict:
         '''Use this method to send text messages
         :param chat_id:
@@ -76,7 +77,18 @@ class Client:
             'reply_markup': reply_markup,
             'reply_to_message_id': reply_to_message_id
         }
-        return await self.request('sendmessage', data=payload)
+        responce = await self.request('sendmessage', data=payload)
+        if isinstance(auto_delete, int):
+            message_id: int = responce['message_id']
+            await asyncio.sleep(delay=auto_delete)
+            callback_data = asyncio.create_task(
+                self.delete_message(
+                    chat_id=chat_id, message_id=message_id
+                )
+            )
+            return callback_data
+
+        return responce
 
 
     async def edit_message(
@@ -123,7 +135,7 @@ class Client:
 
     async def delete_message(self, chat_id: int, message_id: int) -> dict:
         payload: dict = {
-            'chat_id': chat_id, 'reply_to_message_id': message_id
+            'chat_id': chat_id, 'message_id': message_id
         }
         return await self.request('deletemessage', data=payload)
 
