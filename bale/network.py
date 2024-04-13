@@ -1,4 +1,4 @@
-import exceptions
+import .exceptions
 import requests
 
 
