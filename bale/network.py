@@ -3,6 +3,7 @@ import requests
 
 
 class Network:
+
     def __init__(self, token: str, proxy: str, timeout: float):
         self.token: str = token
         self.proxy: str = proxy
