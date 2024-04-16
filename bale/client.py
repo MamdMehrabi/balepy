@@ -16,10 +16,10 @@ class Client:
             raise TokenNotInvalid('`token` did\'t passed')
 
     async def request(self, method: str, data: dict = None, files: dict = None) -> dict:
-        # try:
+        try:
             return await self.network.connect(method=method, data=data, files=files)
-        # except Exception as err:
-        #     print(__file__, err, __file__)
+        except Exception as err:
+            print(__file__, err, __file__)
 
     async def on_message(self):
         '''Use this method to receive updates
@@ -29,14 +29,14 @@ class Client:
 
             client = Client('token', timeout=10)
             async def main():
-                async for update in client.on_message():
-                    print(update.text)
-                    await update.reply('hello __from__ **balepy**')
+                async for message in client.on_message():
+                    print(message.text)
+                    await message.reply('hello __from__ **balepy**')
 
             asyncio.run(main())
         '''
         payload: dict = {
-            'offset': -1, 'limit': 100
+            'offset': 0, 'limit': 100
         }
         while True:
             update = await self.request('getupdates', payload)
@@ -50,11 +50,6 @@ class Client:
             if responce != None and responce != []:
                 payload['offset'] += 1
                 yield message(responce[0], self.network.token, self.network.timeout)
-
-    async def command_handle(self, commands: list):
-        async for message in self.on_message():
-            if message.text in commands:
-                yield message
 
     async def send_message(
             self,
@@ -152,6 +147,7 @@ class Client:
                 chat_id=chat_id, message_id=message_id
             )
         )
+        return await self.request('deletemessage', data=payload)
 
 
     async def send_contact(
@@ -396,6 +392,11 @@ class Client:
             'chat_id': chat_id
         }
         return await self.request('leavechat', data=payload)
+
+
+    async def get_chat_invite_link(self, chat_id: str) -> str:
+        chat_data = await self.get_chat(chat_id=chat_id)
+        return chat_data['invite_link']
 
 
     async def get_chat_invite_link(self, chat_id: int) -> str:
