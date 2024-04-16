@@ -255,6 +255,13 @@ class message:
             return None
 
     @property
+    def has_link(self):
+        if self.text in ['http', '@', 'ble.ir', 'join']:
+            return True
+        else:
+            return False
+
+    @property
     def callback_data_send(self):
         if self.is_callback:
             return self.data['callback_query']['data']

@@ -2,6 +2,7 @@ import requests
 
 
 class Network:
+
     def __init__(self, token: str, timeout: float):
         self.token: str = token
         self.timeout: float = timeout
@@ -23,7 +24,7 @@ class Network:
             )
         )
         if responce.status_code != requests.codes.ok:
-            raise Exception(responce.status_code + responce.text)
+            raise Exception(responce.status_code, responce.text)
 
         final_value = responce.json()
         return final_value['result']
