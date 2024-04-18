@@ -2,19 +2,21 @@
 
 <h3 align="center"> balepy a Library Python for create bot API in bale application </h3>
 
+<img href="https://s8.uupload.ir/files/balethon_uvi2.png" alt="Profile">
+
 ## Install and Update:
 ```bash
 pip install -U balepy
 ```
 
 ## For See Docs:
-- <a href="https://balepy.github.io">WebSite</a>
+- <a href="https://balepy.github.io">Docs</a>
 - <a href="https://t.me/TheCommit">Telegram</a>
 
 ## START:
 ```python
 from bale import Client
-import asyncio
+from asyncio import run
 
 
 __token = 'your-token-here'
@@ -26,7 +28,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    run(main())
 ```
 
 
@@ -35,4 +37,4 @@ if __name__ == '__main__':
 
 ## Social Media:
 #### <a href="https://t.me/TheCommit">TELEGRAM</a>
-#### <a href="https://rubika.ir/TheBalepy">RUBIKA</a>
+#### <a href="https://github.com/balepy">GITHUB</a>
