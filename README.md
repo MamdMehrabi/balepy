@@ -14,7 +14,7 @@ pip install -U balepy
 ## START:
 ```python
 from bale import Client
-import asyncio
+from asyncio import run
 
 
 __token = 'your-token-here'
@@ -26,7 +26,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    run(main())
 ```
 
 
