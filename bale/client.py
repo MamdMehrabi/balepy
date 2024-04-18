@@ -1,6 +1,6 @@
 from .network import Network
 from .util import message
-from .exceptions import *
+from .exceptions import TokenNotInvalid
 
 import asyncio
 
@@ -77,6 +77,31 @@ class Client:
             'reply_to_message_id': reply_to_message_id
         }
         return await self.request('sendmessage', data=payload)
+
+    # async def InlineKeyboard(
+    #         self,
+    #         chat_id: str | int,
+    #         text: str,
+    #         name_keyboard: str,
+    #         callback: str
+    # ) -> dict:
+    #     '''
+    #     Use Method for send Inline Keyboard in chat
+    #     :param chat_id:
+    #         The ID of the group you can send messages to. requirement**
+    #     :param text:
+    #         You can only send between 1 and 4096 characters*. requirement**
+    #     :param name_keyboard:
+    #         The Name for create keyboard in chat. requirement**
+    #     :param callback:
+    #         callback for get answer name_keyboard. requiremnt**
+    #     '''
+    #     payload = {
+    #         'chat_id': chat_id,
+    #         'text': text,
+    #         'reply_markup': {"inline_keyboard": [[{name_keyboard, callback}]]}
+    #     }
+    #     return await self.request('sendmessage', data=payload)
 
 
     async def edit_message(

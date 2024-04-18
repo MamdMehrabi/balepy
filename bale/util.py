@@ -308,3 +308,19 @@ class message:
             'reply_to_message_id': self.message_id
         }
         return await self.network.connect('sendmessage', data=payload)
+
+    @property
+    def groups(self):
+        if self.message["chat"]["type"] == 'group':
+            return self.message
+        
+
+    @property
+    def channel(self):
+        if self.message["chat"]["type"] == 'channel':
+            return self.message
+        
+    @property
+    def private(self):
+        if self.message["chat"]["type"] == 'private':
+            return self.message
