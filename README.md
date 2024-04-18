@@ -2,7 +2,7 @@
 
 <h3 align="center"> balepy a Library Python for create bot API in bale application </h3>
 
-<img href="https://s8.uupload.ir/files/balethon_uvi2.png" alt="Profile">
+<img src="https://s8.uupload.ir/files/balethon_uvi2.png" alt="Profile" dir="ltr" style="width: 150px; height:150px;">
 
 ## Install and Update:
 ```bash
