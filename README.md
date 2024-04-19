@@ -33,4 +33,4 @@ if __name__ == '__main__':
 ## Thanks To:
 ### <a href="https://github.com/metect">AmirAli</a>
 
-<h3>Thanks to all those who contributed directly or indirectly to the development of the module</h3>
+<p>Thanks to all those who contributed directly or indirectly to the development of the module</p>
