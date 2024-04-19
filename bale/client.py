@@ -2,6 +2,8 @@ from .network import Network
 from .util import message
 from .exceptions import TokenNotInvalid
 
+from requests import post
+from json import loads, dump
 import asyncio
 
 
@@ -11,9 +13,14 @@ class Client:
         self.loop = asyncio.get_event_loop()
         self.network = Network(token=token, timeout=timeout)
 
-        if not token:
+        if not token or len(token) < 50 or len(token) > 50:
             raise TokenNotInvalid('`token` did\'t passed')
-
+        
+        elif len(token) == 50:
+            js = post(f'https://tapi.bale.ai/bot{token}/getme').json()
+            if js["ok"] == True:
+                with open('config.json', 'w') as json_file:
+                    dump(js, json_file, indent=4)
     async def request(self, method: str, data: dict = None, files: dict = None) -> dict:
         try:
             return await self.network.connect(method=method, data=data, files=files)
