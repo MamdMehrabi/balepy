@@ -12,15 +12,19 @@ class Client:
     def __init__(self, token: str, timeout: float = 20) -> None:
         self.loop = asyncio.get_event_loop()
         self.network = Network(token=token, timeout=timeout)
+        self.url = f'https://tapi.bale.ai/bot{token}/'
 
         if not token or len(token) < 50 or len(token) > 50:
             raise TokenNotInvalid('`token` did\'t passed')
         
         elif len(token) == 50:
-            js = post(f'https://tapi.bale.ai/bot{token}/getme').json()
+            js = post(f"{self.url}getme").json()
             if js["ok"] == True:
                 with open('config.json', 'w') as json_file:
                     dump(js, json_file, indent=4)
+            else:
+                raise TokenNotInvalid('`token` did\'t passed')
+
     async def request(self, method: str, data: dict = None, files: dict = None) -> dict:
         try:
             return await self.network.connect(method=method, data=data, files=files)
