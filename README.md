@@ -13,7 +13,7 @@ pip install -U balepy
 
 ## START:
 ```python
-from bale import Client
+from balepy import Client
 from asyncio import run
 
 
@@ -29,8 +29,7 @@ if __name__ == '__main__':
     run(main())
 ```
 
+## Contributors
+- [amirali irvany](https://github.com/irvanyamirali)
 
-## Thanks To:
-### <a href="https://github.com/metect">AmirAli</a>
-
-<p>Thanks to all those who contributed directly or indirectly to the development of the module</p>
+Thanks to all those who contributed directly or indirectly to the development of the module
