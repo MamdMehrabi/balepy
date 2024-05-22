@@ -1,4 +1,4 @@
-from client import Client
+from balepy import Client
 
 import requests
 import asyncio

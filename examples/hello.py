@@ -1,4 +1,4 @@
-from bale import Client
+from balepy import Client
 from asyncio import run
 
 
