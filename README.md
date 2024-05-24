@@ -1,7 +1,7 @@
 # balepy
 
 <p align=center>
-<img src="https://s8.uupload.ir/files/balethon_uvi2_esnh.png" style="width: 300px; height: 300px;" align=center alt="background">
+<img src="https://s8.uupload.ir/files/balethon_uvi2_esnh.png" style="width: 200px; height: 200px; border: 1px solid red;" align=center alt="background">
 </p>
 <h3 align="center"> balepy a Library Python for create bot API in bale application <br> <h5 align=center> <a href="https://balepy.github.io"> Docs</a> | <a href="https://t.me/TheLinuxGP">Community</a> | <a href="https://t.me/TheCommit">Telegram Channel</a> | <a href="https://github.com/OnlyRad">Owner</a></h5></h3>
 
