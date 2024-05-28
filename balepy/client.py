@@ -13,17 +13,13 @@ class Client:
         self.loop = asyncio.get_event_loop()
         self.network = Network(token=token, timeout=timeout)
         self.url = f'https://tapi.bale.ai/bot{token}/'
-
-        if not token or len(token) < 50 or len(token) > 50:
-            raise TokenNotInvalid('`token` did\'t passed')
         
-        elif len(token) == 50:
-            js = post(f"{self.url}getme").json()
-            if js["ok"] == True:
-                with open('config.json', 'w') as json_file:
-                    dump(js, json_file, indent=4)
-            else:
-                raise TokenNotInvalid('`token` did\'t passed')
+        js = post(f"{self.url}getme").json()
+        if js["ok"] == True:
+            with open('config.json', 'w') as json_file:
+                dump(js, json_file, indent=4)
+        else:
+            raise TokenNotInvalid('`token` did\'t passed')
 
     async def request(self, method: str, data: dict = None, files: dict = None) -> dict:
         try:
@@ -31,7 +27,7 @@ class Client:
         except Exception as err:
             print(__file__, err, __file__)
 
-    async def on_message(self):
+    async def dispatcher(self):
         '''Use this method to receive updates
         Example:
             from bale import Client
@@ -61,6 +57,11 @@ class Client:
                 payload['offset'] += 1
                 yield message(responce[0], self.network.token, self.network.timeout)
 
+    def on_message(self, func):
+        async def wrapper():
+            async for msg in self.dispatcher():
+                await func(msg)
+        return wrapper
 
     async def send_message(
             self,
