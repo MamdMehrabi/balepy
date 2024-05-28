@@ -3,7 +3,7 @@
 <p align=center>
 <img src="https://s8.uupload.ir/files/balethon_uvi2_esnh.png" style="width: 200px; height: 200px; border: 1px solid red;" align=center alt="background">
 </p>
-<h3 align="center"> Balepy a Python Library for create bot API in bale messengers  <br> <h5 align=center> <a href="https://balepy.github.io"> Docs</a> | <a href="https://t.me/TheLinuxGP">Community</a> | <a href="https://t.me/TheCommit">Telegram Channel</a> | <a href="https://github.com/OnlyRad">Owner</a></h5></h3>
+<h3 align="center"> Balepy a Python Library for create bot API in bale messenger  <br> <h5 align=center> <a href="https://balepy.github.io"> Docs</a> | <a href="https://t.me/TheLinuxGP">Community</a> | <a href="https://t.me/TheCommit">Telegram Channel</a> | <a href="https://github.com/OnlyRad">Owner</a></h5></h3>
 
 
 ## Install and Update:
