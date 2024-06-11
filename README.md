@@ -32,5 +32,6 @@ if __name__ == '__main__':
 
 ## Contributors
 - [amirali irvany](https://github.com/irvanyamirali)
+- [Erafn Bafandeh](https://github.com/Erfan-Bafandeh)
 
 Thanks to all those who contributed directly or indirectly to the development of the module
