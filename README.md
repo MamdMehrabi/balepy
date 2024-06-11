@@ -20,8 +20,9 @@ from asyncio import run
 __token = 'your-token-here'
 client = Client(__token, timeout=10)
 
-async def main():
-    async for message in client.on_message():
+@client.on_message
+async def main(message):
+    if message.text == "/start":
         await message.reply('hello __from__ **balepy**')
 
 
