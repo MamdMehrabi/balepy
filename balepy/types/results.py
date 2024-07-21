@@ -69,3 +69,23 @@ class Results:
         Return the update as dict
         """
         return self.original_update
+
+    @property
+    def id(self):
+        return self.find_keys("id")
+
+    @property
+    def is_bot(self):
+        return self.find_keys("is_bot")
+
+    @property
+    def first_name(self):
+        return self.find_keys("first_name")
+
+    @property
+    def last_name(self):
+        return self.find_keys("last_name")
+
+    @property
+    def username(self):
+        return self.find_keys("username")
