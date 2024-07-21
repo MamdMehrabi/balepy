@@ -1,4 +1,4 @@
-# balepy
+# BalePy
 
 <p align=center>
 <img src="https://s8.uupload.ir/files/balethon_uvi2_esnh.png" style="width: 200px; height: 200px; border: 1px solid red;" align=center alt="background">
@@ -6,12 +6,12 @@
 <h3 align="center"> Balepy a Python Library for create bot API in bale messenger  <br> <h5 align=center> <a href="https://balepy.github.io"> Docs</a> | <a href="https://t.me/TheLinuxGP">Community</a> | <a href="https://t.me/TheCommit">Telegram Channel</a></h3>
 
 
-## Install and Update:
+### Install and Update:
 ```bash
 pip install -U balepy
 ```
 
-## START:
+### Start:
 ```python
 from balepy import Client
 from balepy.types import Updates
@@ -31,4 +31,10 @@ async def updates(update: Updates):
 
 run(updates())
 ```
+
+### Contributors
+Contributions to the project are welcome! If you find any bugs or have suggestions for improvements, please open an issue or submit a pull request on GitHub.
+
+### License
+BalePy is released under the MIT License. See the bundled [LICENSE](https://github.com/mamdmehrabi/balepy/blob/main/LICENSE) file for details.
 
