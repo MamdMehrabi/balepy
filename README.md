@@ -25,7 +25,7 @@ app = Client("my_bot", bot_token=bot_token)
 
 @app.on_message
 async def updates(update: Updates):
-    print(update)
+    print(update.text)
     await app.send_message(update.chat_id, update.text, update.message_id)
 
 
