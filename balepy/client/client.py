@@ -1,7 +1,5 @@
 from typing import Optional
 
-from functools import wraps
-
 from balepy.http import API
 from balepy.types import Updates
 from balepy.methods import Methods
