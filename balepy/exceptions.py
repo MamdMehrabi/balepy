@@ -1,3 +1,0 @@
-
-class TokenNotInvalid(Exception):
-    pass
