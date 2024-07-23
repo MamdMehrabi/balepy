@@ -5,6 +5,10 @@ import balepy
 
 class SendMessage:
 
+    '''
+    this methods for send a message
+    '''
+
     async def send_message(
             self: "balepy.Client",
             chat_id: str,
