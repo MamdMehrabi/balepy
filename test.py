@@ -4,7 +4,7 @@ from balepy.types import Updates
 from asyncio import run
 
 # bot_token = "0123456788:****************************************"
-bot_token = "786709312:NubluZVlb29oRs1MxwUI14XGKTA5dnxCpp5bOzgR"
+bot_token = "TOKEN"
 
 app = Client("my_bot", bot_token=bot_token)
 
