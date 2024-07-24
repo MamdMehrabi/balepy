@@ -5,10 +5,6 @@ import balepy
 
 class ForwardMessage:
 
-    '''
-    This Method's for forward Message
-    '''
-
     async def forward_message(
             self: "balepy.Client",
             chat_id: str,

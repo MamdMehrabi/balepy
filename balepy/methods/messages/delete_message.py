@@ -4,10 +4,6 @@ import balepy
 
 class DeleteMessage:
 
-    '''
-    this method for delete message
-    '''
-
     async def delete_message(
             self: "balepy.Client",
             chat_id: str,

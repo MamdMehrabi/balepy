@@ -4,10 +4,6 @@ import balepy
 
 class CopyMessage:
 
-    '''
-    This Method for copy a message
-    '''
-
     async def copy_message(
             self: "balepy.Client",
             chat_id: str,

@@ -4,10 +4,6 @@ import balepy
 
 class EditMessageText:
 
-    '''
-    this method for edit a message after send message
-    '''
-
     async def edit_message_text(
             self: "balepy.Client",
             text: str,
