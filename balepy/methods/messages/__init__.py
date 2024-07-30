@@ -6,7 +6,15 @@ from .edit_message_text import EditMessageText
 from .send_photo import SendPhoto
 from .send_audio import SendAudio
 from .send_document import SendDocument
+from .send_video import SendVideo
 
-
-class Messages(SendMessage, ForwardMessage, CopyMessage, DeleteMessage, EditMessageText, SendPhoto, SendAudio, SendDocument):
+class Messages(SendMessage,
+               ForwardMessage,
+               CopyMessage,
+               DeleteMessage,
+               EditMessageText,
+               SendPhoto,
+               SendAudio,
+               SendDocument,
+               SendVideo):
     pass
