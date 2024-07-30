@@ -2,10 +2,9 @@ from balepy.objects import HTTPMethod
 
 import balepy
 
+class CopyMessage:
 
-class ForwardMessage:
-
-    async def forward_message(
+    async def copy_message(
             self: "balepy.Client",
             chat_id: str,
             from_chat_id: str,
@@ -16,4 +15,4 @@ class ForwardMessage:
             'from_chat_id': from_chat_id,
             'message_id': message_id
         }
-        return await self.api.execute(name="forwardMessage", method=HTTPMethod.POST, data=params)
+        return await self.api.execute(name="copyMessage", method=HTTPMethod.POST, data=params)
