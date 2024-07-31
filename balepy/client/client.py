@@ -24,6 +24,7 @@ class Client(Methods):
         :param base_url: The base URL for the Bale API.
         :param max_retry: The number of attempts by the client to send the request to the server.
         """
+        self.name = name
         self.bot_token = bot_token
         self.timeout = timeout
         self.max_retry = max_retry

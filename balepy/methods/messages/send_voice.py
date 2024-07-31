@@ -2,23 +2,22 @@ from balepy.objects import HTTPMethod
 
 import balepy
 
+class SendVoice:
 
-class SendVideo:
-
-    async def send_video(
-            self: 'balepy.Client',
+    async def send_voice(
+            self: "balepy.Client",
             chat_id: str,
-            video: str,
+            voice: str,
             caption=None,
             reply_to_message_id=None,
             reply_markup=None
     ):
         params = {
             'chat_id': chat_id,
-            'video': video,
+            'voic': voice,
             'caption': caption,
             'reply_to_message_id': reply_to_message_id,
             'reply_markup': reply_markup
         }
 
-        return await self.api.execute(name='sendVideo', method=HTTPMethod.POST, data=params)
+        return await self.api.execute(name='sendVoice', method=HTTPMethod.POST, data=params)

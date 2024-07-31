@@ -2,6 +2,7 @@ from balepy.objects import HTTPMethod
 
 import balepy
 
+
 class CopyMessage:
 
     async def copy_message(

@@ -7,6 +7,10 @@ from .send_photo import SendPhoto
 from .send_audio import SendAudio
 from .send_document import SendDocument
 from .send_video import SendVideo
+from .send_animation import SendAnimation
+from .send_voice import SendVoice
+from .send_media_group import SendMediaGroup
+
 
 class Messages(SendMessage,
                ForwardMessage,
@@ -16,5 +20,9 @@ class Messages(SendMessage,
                SendPhoto,
                SendAudio,
                SendDocument,
-               SendVideo):
+               SendVideo,
+               SendAnimation,
+               SendVoice,
+               SendMediaGroup
+               ):
     pass

@@ -2,6 +2,7 @@ from balepy.objects import HTTPMethod
 
 import balepy
 
+
 class EditMessageText:
 
     async def edit_message_text(

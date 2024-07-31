@@ -1,3 +1,7 @@
+from balepy.objects import HTTPMethod
+
+import balepy
+
 
 class Updates:
 
@@ -121,7 +125,7 @@ class Updates:
             return None
 
     @property
-    def new_memberr_first_name(self):
+    def new_member_first_name(self):
         if self.new_member:
             return self.message["new_chat_members"][0]["first_name"]
         else:
@@ -299,13 +303,13 @@ class Updates:
         else:
             return None
 
-    async def reply(self, text: str) -> dict:
+    async def reply(self: "balepy.Client", text: str) -> dict:
         payload: dict = {
             "text": text,
-            "chat_id": self.chat_id,
-            "reply_to_message_id": self.message_id
+            "chat_id": Updates.chat_id,
+            "reply_to_message_id": Updates.message_id
         }
-        return await self.network.connect("sendmessage", data=payload)
+        return await self.api.execute(name="sendMessage", method=HTTPMethod.POST, data=payload)
 
     @property
     def is_groups(self):
