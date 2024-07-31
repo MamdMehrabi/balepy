@@ -8,9 +8,9 @@ class SendDocument:
             self: 'balepy.Client',
             chat_id: str,
             document: str,
-            caption = None,
-            reply_to_message_id = None,
-            reply_markup = None
+            caption=None,
+            reply_to_message_id=None,
+            reply_markup=None
     ):
         params = {
             'chat_id': chat_id,
