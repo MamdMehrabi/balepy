@@ -1,5 +1,4 @@
 from balepy.objects import HTTPMethod
-from balepy.types import Results
 
 import balepy
 
