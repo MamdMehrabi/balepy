@@ -2,6 +2,7 @@ from balepy.objects import HTTPMethod
 
 import balepy
 
+
 class DeleteMessage:
 
     async def delete_message(

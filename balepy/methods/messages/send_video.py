@@ -2,6 +2,7 @@ from balepy.objects import HTTPMethod
 
 import balepy
 
+
 class SendVideo:
 
     async def send_video(

@@ -2,6 +2,7 @@ from balepy.objects import HTTPMethod
 
 import balepy
 
+
 class SendAudio:
 
     async def send_audio(
