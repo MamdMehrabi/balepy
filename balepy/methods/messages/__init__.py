@@ -8,6 +8,8 @@ from .send_audio import SendAudio
 from .send_document import SendDocument
 from .send_video import SendVideo
 from .send_animation import SendAnimation
+from .send_voice import SendVoice
+
 
 class Messages(SendMessage,
                ForwardMessage,
@@ -18,5 +20,7 @@ class Messages(SendMessage,
                SendAudio,
                SendDocument,
                SendVideo,
-               SendAnimation):
+               SendAnimation,
+               SendVoice
+               ):
     pass
