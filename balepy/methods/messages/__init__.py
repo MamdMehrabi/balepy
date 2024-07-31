@@ -9,6 +9,7 @@ from .send_document import SendDocument
 from .send_video import SendVideo
 from .send_animation import SendAnimation
 from .send_voice import SendVoice
+from .send_media_group import SendMediaGroup
 
 
 class Messages(SendMessage,
@@ -21,6 +22,7 @@ class Messages(SendMessage,
                SendDocument,
                SendVideo,
                SendAnimation,
-               SendVoice
+               SendVoice,
+               SendMediaGroup
                ):
     pass
