@@ -10,6 +10,7 @@ from .send_video import SendVideo
 from .send_animation import SendAnimation
 from .send_voice import SendVoice
 from .send_media_group import SendMediaGroup
+from .send_location import SendLocation
 
 
 class Messages(SendMessage,
@@ -23,6 +24,7 @@ class Messages(SendMessage,
                SendVideo,
                SendAnimation,
                SendVoice,
-               SendMediaGroup
+               SendMediaGroup,
+               SendLocation
                ):
     pass
